@@ -28,12 +28,12 @@ There were various problems installing and using `scikit-learn` specifically.
 ### IDE
 I am using PyCharm (Community Edition). The inherited `.gitignore` ignores all of the `.idea/` folder, so not IDE settings will be saved in the repo.
 
-Set the 'Project Interpreter' to be the venv interpreter. 
+Set the 'Project Interpreter' to be the venv interpreter. This should mean that, when you open the project, the correct interpreter is referenced.
 
-When opening PyCharm, commands are (in Anaconda prompt):
+If you want the conda-env to be open in the background, when opening PyCharm, commands are (in Anaconda prompt):
 ```
 > cd [to home folder of this project]
-> conda activate Udemy_deploy_ML
+> conda activate py369
 > env\Scripts\activate
 > [location of PyCharm.exe] 
 ```
