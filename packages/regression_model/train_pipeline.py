@@ -50,7 +50,7 @@ def run_training() -> None:
 
     # transform the target
     y_train = np.log(y_train)
-    y_test = np.log(y_test)
+    # y_test = np.log(y_test) # TODO: Not currently used
 
     pipeline.price_pipe.fit(X_train[FEATURES],
                             y_train)

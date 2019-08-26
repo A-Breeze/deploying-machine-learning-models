@@ -32,14 +32,15 @@ class NumericalImputer(BaseEstimator, TransformerMixin):
     """Numerical missing value imputer."""
 
     def __init__(self, variables=None):
+        self.imputer_dict_ = {}
         if not isinstance(variables, list):
             self.variables = [variables]
         else:
             self.variables = variables
 
+    # noinspection PyUnusedLocal
     def fit(self, X, y=None):
-        # persist mode in a dictionary
-        self.imputer_dict_ = {}
+        # populate mode in dictionary
         for feature in self.variables:
             self.imputer_dict_[feature] = X[feature].mode()[0]
         return self
@@ -62,6 +63,7 @@ class TemporalVariableEstimator(BaseEstimator, TransformerMixin):
 
         self.reference_variables = reference_variable
 
+    # noinspection PyUnusedLocal
     def fit(self, X, y=None):
         # we need this step to fit the sklearn pipeline
         return self
@@ -78,21 +80,21 @@ class RareLabelCategoricalEncoder(BaseEstimator, TransformerMixin):
     """Rare label categorical encoder"""
 
     def __init__(self, tol=0.05, variables=None):
+        self.encoder_dict_ = {}
         self.tol = tol
         if not isinstance(variables, list):
             self.variables = [variables]
         else:
             self.variables = variables
 
+    # noinspection PyUnusedLocal
     def fit(self, X, y=None):
-        # persist frequent labels in dictionary
-        self.encoder_dict_ = {}
-
+        # populate frequent labels in dictionary
         for var in self.variables:
             # the encoder will learn the most frequent categories
-            t = pd.Series(X[var].value_counts() / np.float(len(X)))
+            most_freq_ser = pd.Series(X[var].value_counts() / np.float(len(X)))
             # frequent labels:
-            self.encoder_dict_[var] = list(t[t >= self.tol].index)
+            self.encoder_dict_[var] = list(most_freq_ser[most_freq_ser.values >= self.tol].index)
 
         return self
 
@@ -109,6 +111,7 @@ class CategoricalEncoder(BaseEstimator, TransformerMixin):
     """String to numbers categorical encoder."""
 
     def __init__(self, variables=None):
+        self.encoder_dict_ = {}
         if not isinstance(variables, list):
             self.variables = [variables]
         else:
@@ -118,9 +121,7 @@ class CategoricalEncoder(BaseEstimator, TransformerMixin):
         temp = pd.concat([X, y], axis=1)
         temp.columns = list(X.columns) + ['target']
 
-        # persist transforming dictionary
-        self.encoder_dict_ = {}
-
+        # populate transforming dictionary
         for var in self.variables:
             t = temp.groupby([var])['target'].mean().sort_values(
                 ascending=True).index
@@ -155,6 +156,7 @@ class LogTransformer(BaseEstimator, TransformerMixin):
         else:
             self.variables = variables
 
+    # noinspection PyUnusedLocal
     def fit(self, X, y=None):
         # to accomodate the pipeline
         return self
@@ -180,6 +182,7 @@ class DropUnecessaryFeatures(BaseEstimator, TransformerMixin):
     def __init__(self, variables_to_drop=None):
         self.variables = variables_to_drop
 
+    # noinspection PyUnusedLocal
     def fit(self, X, y=None):
         return self
 
