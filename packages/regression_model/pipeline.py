@@ -2,7 +2,6 @@ from sklearn.pipeline import Pipeline
 
 import preprocessors as pp
 
-
 CATEGORICAL_VARS = ['MSZoning',
                     'Neighborhood',
                     'RoofStyle',

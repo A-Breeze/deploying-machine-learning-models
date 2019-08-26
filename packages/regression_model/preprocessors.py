@@ -11,6 +11,7 @@ class CategoricalImputer(BaseEstimator, TransformerMixin):
         else:
             self.variables = variables
 
+    # noinspection PyUnusedLocal
     def fit(self, X: pd.DataFrame, y: pd.Series = None) -> 'CategoricalImputer':
         """Fit statement to accomodate the sklearn pipeline."""
 
