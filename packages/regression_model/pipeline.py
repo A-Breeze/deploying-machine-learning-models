@@ -4,6 +4,7 @@ from sklearn.preprocessing import MinMaxScaler
 
 import preprocessors as pp
 
+# ==== Configuration parameters =====
 # categorical variables with NA in train set
 CATEGORICAL_VARS_WITH_NA = [
     'MasVnrType', 'BsmtQual', 'BsmtExposure',
@@ -28,19 +29,20 @@ CATEGORICAL_VARS = ['MSZoning', 'Neighborhood', 'RoofStyle', 'MasVnrType',
                     'KitchenQual', 'FireplaceQu', 'GarageType', 'GarageFinish',
                     'PavedDrive']
 
+# ==== Pipeline instance =====
 price_pipe = Pipeline(
-    [
+    [  # Specify each step and to which variables it applies in turn
         ('categorical_imputer',
          pp.CategoricalImputer(variables=CATEGORICAL_VARS_WITH_NA)),
         ('numerical_inputer',
          pp.NumericalImputer(variables=NUMERICAL_VARS_WITH_NA)),
         ('temporal_variable',
-         pp.TemporalVariableEstimator(
+         pp.TemporalVariableTransformer(
              variables=TEMPORAL_VARS,
              reference_variable=TEMPORAL_VARS)),
         ('rare_label_encoder',
          pp.RareLabelCategoricalEncoder(
-             tol=0.01,
+             tol=0.01,  # AB: Hard-coded value that could be a parameter?
              variables=CATEGORICAL_VARS)),
         ('categorical_encoder',
          pp.CategoricalEncoder(variables=CATEGORICAL_VARS)),
@@ -49,6 +51,7 @@ price_pipe = Pipeline(
         ('drop_features',
          pp.DropUnecessaryFeatures(variables_to_drop=DROP_FEATURES)),
         ('scaler', MinMaxScaler()),
-        ('Linear_model', Lasso(alpha=0.005, random_state=0))
+        # Last step is an Estimator to fit the model
+        ('Linear_model', Lasso(alpha=0.005, random_state=0)) # AB: Hard-coded values that could be parameters?
     ]
 )

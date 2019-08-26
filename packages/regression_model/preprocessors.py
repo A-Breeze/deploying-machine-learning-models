@@ -52,16 +52,15 @@ class NumericalImputer(BaseEstimator, TransformerMixin):
         return X
 
 
-class TemporalVariableEstimator(BaseEstimator, TransformerMixin):
+class TemporalVariableTransformer(BaseEstimator, TransformerMixin):
     """Temporal variable calculator."""
 
     def __init__(self, variables=None, reference_variable=None):
+        self.reference_variables = reference_variable
         if not isinstance(variables, list):
             self.variables = [variables]
         else:
             self.variables = variables
-
-        self.reference_variables = reference_variable
 
     # noinspection PyUnusedLocal
     def fit(self, X, y=None):
@@ -103,7 +102,6 @@ class RareLabelCategoricalEncoder(BaseEstimator, TransformerMixin):
         for feature in self.variables:
             X[feature] = np.where(X[feature].isin(
                 self.encoder_dict_[feature]), X[feature], 'Rare')
-
         return X
 
 
@@ -123,8 +121,10 @@ class CategoricalEncoder(BaseEstimator, TransformerMixin):
 
         # populate transforming dictionary
         for var in self.variables:
-            t = temp.groupby([var])['target'].mean().sort_values(
-                ascending=True).index
+            t = (temp
+                 .groupby([var])['target'].mean()
+                 .sort_values(ascending=True).index
+                 )
             self.encoder_dict_[var] = {k: i for i, k in enumerate(t, 0)}
 
         return self
@@ -166,10 +166,10 @@ class LogTransformer(BaseEstimator, TransformerMixin):
 
         # check that the values are non-negative for log transform
         if not (X[self.variables] > 0).all().all():
-            vars_ = self.variables[(X[self.variables] <= 0).any()]
+            vars_ = X[self.variables].columns[(X[self.variables] <= 0).any()]
             raise ValueError(
                 f"Variables contain zero or negative values, "
-                f"can't apply log for vars: {vars_}")
+                f"can't apply log for vars: {vars_.tolist()}")
 
         for feature in self.variables:
             X[feature] = np.log(X[feature])

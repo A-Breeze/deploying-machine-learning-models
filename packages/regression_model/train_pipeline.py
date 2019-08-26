@@ -7,6 +7,7 @@ from sklearn.externals import joblib
 
 import pipeline
 
+# ==== Configuration parameters =====
 PACKAGE_ROOT = pathlib.Path(__file__).resolve().parent
 TRAINED_MODEL_DIR = PACKAGE_ROOT / 'trained_models'
 DATASET_DIR = PACKAGE_ROOT / 'datasets'  # Data sets are saved here (and git ignored)
@@ -28,7 +29,7 @@ FEATURES = ['MSSubClass', 'MSZoning', 'Neighborhood', 'OverallQual',
 def save_pipeline(*, pipeline_to_persist) -> None:
     """Persist the pipeline."""
 
-    save_file_name = 'regression_model.pkl'
+    save_file_name = 'regression_model.pkl'  # AB: Why is this not a configuration parameter?
     save_path = TRAINED_MODEL_DIR / save_file_name
     joblib.dump(pipeline_to_persist, save_path)
 
@@ -45,15 +46,13 @@ def run_training() -> None:
     X_train, X_test, y_train, y_test = train_test_split(
         data[FEATURES],
         data[TARGET],
-        test_size=0.1,
+        test_size=0.1,  # AB: Both of these are hard-coded values, so should probably be config params
         random_state=0)  # we are setting the seed here
 
     # transform the target
     y_train = np.log(y_train)
-    # y_test = np.log(y_test) # TODO: Not currently used
 
-    pipeline.price_pipe.fit(X_train[FEATURES],
-                            y_train)
+    pipeline.price_pipe.fit(X_train[FEATURES], y_train) # Note: Only feed in features we want
 
     save_pipeline(pipeline_to_persist=pipeline.price_pipe)
 
