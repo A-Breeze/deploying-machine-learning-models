@@ -5,16 +5,25 @@ For the documentation, visit the [course on Udemy](https://www.udemy.com/deploym
 
 ## Setup
 ### Environment
-I will use the `venv` that is specified *within* the conda-env `Udemy_deploy_ML` that I set up for the other part of the course (because it tracks the correct version of Python).
+I will use the `venv` that is specified *within* a conda-env `py369`. This conda-env onctains only `python=3.6.9`.
 
 Commands are (in Anaconda prompt):
 ```
 > cd [to home folder of this project]
-> conda activate Udemy_deploy_ML
+> conda activate py369
 > python -m venv env   # Create new venv called "env"
 > env\Scripts\activate   # Activate env
 > pip install -r requirements.txt
 ```
+
+#### Trouble-shooting
+There were various problems installing and using `scikit-learn` specifically. 
+
+- The line `pip install -r requirements.txt` failed, although `scikit-learn` appeared to be in the `pip list` for the venv, it was not accessible from Python.
+- After various experiments, it seems that there is a limit (on my Windows machine) on the length of the path, and `scikit-learn` (or one of its dependencies) was exceeding this limit, wheras the other packages were not.  
+    - Inspired by: <https://stackoverflow.com/a/56857828>...
+    - ...which links to: <https://stackoverflow.com/a/1880453>
+
 
 ### IDE
 I am using PyCharm (Community Edition). The inherited `.gitignore` ignores all of the `.idea/` folder, so not IDE settings will be saved in the repo.
