@@ -52,7 +52,7 @@ def run_training() -> None:
     # transform the target
     y_train = np.log(y_train)
 
-    pipeline.price_pipe.fit(X_train[FEATURES], y_train) # Note: Only feed in features we want
+    pipeline.price_pipe.fit(X_train[FEATURES], y_train)  # Note: Only feed in features we want
 
     save_pipeline(pipeline_to_persist=pipeline.price_pipe)
 

@@ -52,6 +52,6 @@ price_pipe = Pipeline(
          pp.DropUnecessaryFeatures(variables_to_drop=DROP_FEATURES)),
         ('scaler', MinMaxScaler()),
         # Last step is an Estimator to fit the model
-        ('Linear_model', Lasso(alpha=0.005, random_state=0)) # AB: Hard-coded values that could be parameters?
+        ('Linear_model', Lasso(alpha=0.005, random_state=0))  # AB: Hard-coded values that could be parameters?
     ]
 )
