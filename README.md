@@ -13,7 +13,9 @@ Commands are (in Anaconda prompt):
 > conda activate py369
 > python -m venv env   # Create new venv called "env"
 > env\Scripts\activate   # Activate env
-> pip install -r requirements.txt
+> pip install -r requirements.txt   # Requirements for the project
+# Requirements for the self-contained package
+> pip install -r packages\regression_model\requirements.txt 
 ```
 
 #### Trouble-shooting
