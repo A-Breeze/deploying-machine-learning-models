@@ -14,8 +14,16 @@ Commands are (in Anaconda prompt):
 > python -m venv env   # Create new venv called "env"
 > env\Scripts\activate   # Activate env
 > pip install -r requirements.txt   # Requirements for the project
-# Requirements for the self-contained package
+# Requirements for the self-contained regression_model package
 > pip install -r packages\regression_model\requirements.txt 
+# Requirements for the API package
+pip install -r packages\ml_api\requirements.txt
+```
+
+To install a package (that has been built) locally, use the `-e` switch for `pip`, e.g.:
+```
+> cd [root of the git repo]
+> pip install -e packages\regression_model
 ```
 
 #### Trouble-shooting
@@ -52,3 +60,10 @@ This is a "monorepo" (i.e. will hold all work on the product, including various 
 - Select `Mark Directory as...` (near bottom of list) `Source Root`.
 
 From <https://stackoverflow.com/a/35553721>.
+
+### Building a package
+The following will create a *source* distribution and a *wheel* distribution out of a Python package that you have written (and which includes a `setup.py`).
+```
+> cd [root of git repo]
+> python packages\regression_model\setup.py sdist bdist_wheel
+```
