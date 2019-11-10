@@ -40,7 +40,7 @@ class NumericalImputer(BaseEstimator, TransformerMixin):
 
     # noinspection PyUnusedLocal
     def fit(self, X, y=None):
-        # populate mode in dictionary
+        # persist mode in a dictionary
         for feature in self.variables:
             self.imputer_dict_[feature] = X[feature].mode()[0]
         return self
@@ -56,11 +56,12 @@ class TemporalVariableTransformer(BaseEstimator, TransformerMixin):
     """Temporal variable calculator."""
 
     def __init__(self, variables=None, reference_variable=None):
-        self.reference_variables = reference_variable
         if not isinstance(variables, list):
             self.variables = [variables]
         else:
             self.variables = variables
+
+        self.reference_variables = reference_variable
 
     # noinspection PyUnusedLocal
     def fit(self, X, y=None):
@@ -88,7 +89,8 @@ class RareLabelCategoricalEncoder(BaseEstimator, TransformerMixin):
 
     # noinspection PyUnusedLocal
     def fit(self, X, y=None):
-        # populate frequent labels in dictionary
+        # persist frequent labels in dictionary
+
         for var in self.variables:
             # the encoder will learn the most frequent categories
             most_freq_ser = pd.Series(X[var].value_counts() / np.float(len(X)))
@@ -102,6 +104,7 @@ class RareLabelCategoricalEncoder(BaseEstimator, TransformerMixin):
         for feature in self.variables:
             X[feature] = np.where(X[feature].isin(
                 self.encoder_dict_[feature]), X[feature], 'Rare')
+
         return X
 
 
@@ -119,12 +122,11 @@ class CategoricalEncoder(BaseEstimator, TransformerMixin):
         temp = pd.concat([X, y], axis=1)
         temp.columns = list(X.columns) + ['target']
 
-        # populate transforming dictionary
+        # persist transforming dictionary
+
         for var in self.variables:
-            t = (temp
-                 .groupby([var])['target'].mean()
-                 .sort_values(ascending=True).index
-                 )
+            t = temp.groupby([var])['target'].mean().sort_values(
+                ascending=True).index
             self.encoder_dict_[var] = {k: i for i, k in enumerate(t, 0)}
 
         return self
@@ -143,36 +145,6 @@ class CategoricalEncoder(BaseEstimator, TransformerMixin):
             raise ValueError(
                 f'Categorical encoder has introduced NaN when '
                 f'transforming categorical variables: {vars_.keys()}')
-
-        return X
-
-
-class LogTransformer(BaseEstimator, TransformerMixin):
-    """Logarithm transformer."""
-
-    def __init__(self, variables=None):
-        if not isinstance(variables, list):
-            self.variables = [variables]
-        else:
-            self.variables = variables
-
-    # noinspection PyUnusedLocal
-    def fit(self, X, y=None):
-        # to accomodate the pipeline
-        return self
-
-    def transform(self, X):
-        X = X.copy()
-
-        # check that the values are non-negative for log transform
-        if not (X[self.variables] > 0).all().all():
-            vars_ = X[self.variables].columns[(X[self.variables] <= 0).any()]
-            raise ValueError(
-                f"Variables contain zero or negative values, "
-                f"can't apply log for vars: {vars_.tolist()}")
-
-        for feature in self.variables:
-            X[feature] = np.log(X[feature])
 
         return X
 
