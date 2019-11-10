@@ -27,8 +27,9 @@ def run_training() -> None:
         random_state=0)  # we are setting the seed here
 
     # transform the target
+    # noinspection PyUnresolvedReferences
     y_train = np.log(y_train)
-    # noinspection PyUnusedLocal
+    # noinspection PyUnusedLocal,PyUnresolvedReferences
     y_test = np.log(y_test)
 
     pipeline.price_pipe.fit(X_train[config.FEATURES], y_train)  # Note: Only feed in features we want

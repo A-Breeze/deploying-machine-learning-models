@@ -21,6 +21,7 @@ def make_prediction(*, input_data) -> dict:
     data = pd.read_json(input_data)
     validated_data = validate_inputs(input_data=data)
     prediction = _price_pipe.predict(validated_data[config.FEATURES])
+    # noinspection PyUnresolvedReferences
     output = np.exp(prediction)
 
     results = {'predictions': output, 'version': _version}

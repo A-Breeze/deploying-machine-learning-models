@@ -29,6 +29,7 @@ class LogTransformer(BaseEstimator, TransformerMixin):
                 f"can't apply log for vars: {vars_}")
 
         for feature in self.variables:
+            # noinspection PyUnresolvedReferences
             X[feature] = np.log(X[feature])
 
         return X
