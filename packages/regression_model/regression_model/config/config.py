@@ -1,10 +1,8 @@
-import os
 import pathlib
-
-import regression_model
 
 import pandas as pd
 
+import regression_model
 
 pd.options.display.max_rows = 10
 pd.options.display.max_columns = 10
