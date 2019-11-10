@@ -24,7 +24,6 @@ FEATURES = ['MSSubClass', 'MSZoning', 'Neighborhood',
             # this one is only to calculate temporal variable:
             'YrSold']
 
-
 # this variable is to calculate the temporal variable,
 # can be dropped afterwards
 DROP_FEATURES = 'YrSold'
