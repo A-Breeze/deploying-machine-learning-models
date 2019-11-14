@@ -1,8 +1,7 @@
+import typing as t
+
 from marshmallow import Schema, fields
 from marshmallow import ValidationError
-
-import typing as t
-import json
 
 
 class InvalidInputError(Exception):
@@ -120,6 +119,7 @@ def validate_inputs(input_data):
     schema = HouseDataRequestSchema(strict=True, many=True)
 
     # convert syntax error field names (beginning with numbers)
+    # noinspection PyShadowingBuiltins
     for dict in input_data:
         for key, value in SYNTAX_ERROR_FIELD_MAP.items():
             dict[value] = dict[key]
@@ -134,6 +134,7 @@ def validate_inputs(input_data):
     # convert syntax error field names back
     # this is a hack - never name your data
     # fields with numbers as the first letter.
+    # noinspection PyShadowingBuiltins
     for dict in input_data:
         for key, value in SYNTAX_ERROR_FIELD_MAP.items():
             dict[key] = dict[value]
