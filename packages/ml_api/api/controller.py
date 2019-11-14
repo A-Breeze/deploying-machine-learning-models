@@ -35,6 +35,7 @@ def predict():
         _logger.info(f'Outputs: {result}')
 
         predictions = result.get('predictions')[0]
+        # noinspection PyShadowingNames
         version = result.get('version')
 
         return jsonify({'predictions': predictions,
