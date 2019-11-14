@@ -104,7 +104,7 @@ venv.bak/
 .mypy_cache/
 
 # pycharm
-.idea/
+.idea/*
 
 # pickle files
 *.pkl
@@ -112,3 +112,10 @@ venv.bak/
 # datafiles
 train.csv
 test.csv
+
+# ------------------------
+# AB Amendments
+# Include any run configurations that are marked to 'Share'
+!.idea/runConfigurations/
+
+# See here for negating the gitignore for a specified subfolder: <https://stackoverflow.com/a/5534865>

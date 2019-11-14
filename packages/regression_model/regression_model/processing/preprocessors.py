@@ -104,6 +104,7 @@ class RareLabelCategoricalEncoder(BaseEstimator, TransformerMixin):
     def transform(self, X):
         X = X.copy()
         for feature in self.variables:
+            # noinspection PyUnresolvedReferences
             X[feature] = np.where(X[feature].isin(
                 self.encoder_dict_[feature]), X[feature], 'Rare')
 
