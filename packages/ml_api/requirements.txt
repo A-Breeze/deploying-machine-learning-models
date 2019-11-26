@@ -1,3 +1,6 @@
+# AB note: Section 8.4 recommends using GemFury, but I decided not to.
+# --extra-index-url=${PIP_EXTRA_INDEX_URL}
+
 # api
 flask==1.0.2
 
