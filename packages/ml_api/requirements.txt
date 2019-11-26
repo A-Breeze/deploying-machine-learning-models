@@ -9,4 +9,4 @@ marshmallow==2.17.0
 
 # local regression_model package
 # update with your local path
--e "c:\users\a.breeze\documents\05_git_repos\deploying-machine-learning-models\packages\regression_model"
+-e ".\packages\regression_model"
