@@ -109,6 +109,8 @@ venv.bak/
 # datafiles
 train.csv
 test.csv
+data_description.txt
+sample_submission.csv
 
 # ------------------------
 # AB Amendments

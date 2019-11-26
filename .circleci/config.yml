@@ -21,7 +21,7 @@ jobs:
   test_ml_api:
     working_directory: ~/project
     docker:
-      - image: circleci/python:3.7.2
+      - image: circleci/python:3.6.9
     steps:
       - checkout
       - run:
@@ -30,13 +30,16 @@ jobs:
             virtualenv venv
             . venv/bin/activate
             pip install --upgrade pip
+            pip install -r packages/regression_model/requirements.txt
+            chmod +x ./scripts/fetch_kaggle_dataset.sh
+            ./scripts/fetch_kaggle_dataset.sh
             pip install -r packages/ml_api/requirements.txt
             py.test -vv packages/ml_api/tests
 
   train_and_upload_regression_model:
     working_directory: ~/project
     docker:
-      - image: circleci/python:3.7.2
+      - image: circleci/python:3.6.9
     steps:
       - checkout
       - run: 
@@ -49,7 +52,7 @@ jobs:
           name: Publish model
           command: |
             . venv/bin/activate
-            chmod +x ./scripts/fetch_kaggle_dataset.sh ./scripts/publish_model.sh
+            chmod +x ./scripts/fetch_kaggle_dataset.sh # ./scripts/publish_model.sh # Commented out so it is not used
             ./scripts/fetch_kaggle_dataset.sh
             PYTHONPATH=./packages/regression_model python3 packages/regression_model/regression_model/train_pipeline.py
             # AB note: Section 8.4 recommends using GemFury, but I decided not to. The following line is therefore commented out
