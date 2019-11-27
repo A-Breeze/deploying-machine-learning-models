@@ -54,7 +54,7 @@ class NumericalImputer(BaseEstimator, TransformerMixin):
         return X
 
 
-class TemporalVariableTransformer(BaseEstimator, TransformerMixin):
+class TemporalVariableEstimator(BaseEstimator, TransformerMixin):
     """Temporal variable calculator."""
 
     def __init__(self, variables=None, reference_variable=None):

@@ -106,12 +106,11 @@ venv.bak/
 # pycharm
 .idea/*
 
-# pickle files
-*.pkl
-
 # datafiles
 train.csv
 test.csv
+data_description.txt
+sample_submission.csv
 
 # ------------------------
 # AB Amendments

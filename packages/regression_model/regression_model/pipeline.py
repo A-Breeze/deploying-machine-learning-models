@@ -19,7 +19,7 @@ price_pipe = Pipeline(
         ('numerical_inputer',
             pp.NumericalImputer(variables=config.NUMERICAL_VARS_WITH_NA)),
         ('temporal_variable',
-            pp.TemporalVariableTransformer(
+            pp.TemporalVariableEstimator(
                 variables=config.TEMPORAL_VARS,
                 reference_variable=config.DROP_FEATURES)),
         ('rare_label_encoder',
