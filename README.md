@@ -1,3 +1,4 @@
+<a name="top"></a>
 # Deployment of Machine Learning Models
 Fork of repo for the online course Deployment of Machine Learning Models.
 
@@ -8,12 +9,16 @@ For the documentation, visit the [course on Udemy](https://www.udemy.com/deploym
 1. [Setup](#Setup)
     - [Start Binder instance](#Start-Binder-instance)
     - [Package environment](#Package-environment)
+    - [Get data for modelling](#Get-data-for-modelling)
 1. [Structure of the repo](#Structure-of-the-repo)
 1. [Tasks](#Tasks)
-    - [Build the packages](#Build-the-packages)
+    - [Train the regression pipeline](#Train-the-regression-pipeline)
+    - [Build the model package](#Build-the-model-package)
     - [Run automated tests](#Run-automated-tests)
     - [Run continuous integration](#Run-continuous-integration)
 1. [Trouble-shooting](#Trouble-shooting)
+
+<p align="right"><a href="#top">Back to top</a></p>
 
 ## Setup
 The following describes how to run the repo using JupyterLab on Binder. 
@@ -34,41 +39,75 @@ A conda-env has been created from `envinronment.yml` in Binder is called `notebo
 
 Commands for the Binder Console (in Linux) are:
 ```
-$ conda activate notebook  # Or `py369` if not on Binder
-$ python -m venv env   # Create new venv called "env"
-$ source env/bin/activate   # Activate env (or `env\Scripts\activate` on Windows)
-$ pip install -r requirements.txt   # Requirements for the project
+conda activate notebook  # Or `py369` if not on Binder
+python -m venv env   # Create new venv called "env"
+source env/bin/activate   # Activate env (or `env\Scripts\activate` on Windows)
+pip install -r requirements_binder.txt   # Requirements for the project, excluding Jupyter
 # Requirements for the self-contained regression_model package
-$ pip install -r packages/regression_model/requirements.txt 
+pip install -r packages/regression_model/requirements.txt 
 # Requirements for the API package
-$ pip install -r packages/ml_api/requirements.txt
+pip install -r packages/ml_api/requirements.txt
 ```
 
-### Get data
-**TODO**: Write this section
+### Get data for modelling
+Data is required for fitting the model in the `regression_model` package. It is downloaded from Kaggle using the Kaggle CLI. For this we need an API key as per <https://www.kaggle.com/docs/api>.
+- Get an API Key by signing in to Kaggle and go to: `My Account` - `API` section - `Create new API Token`. 
+    - This downloads a `kaggle.json` which should normally be saved at `~/.kaggle/kaggle.json` (Linux) or `C:\Users<Windows-username>.kaggle\kaggle.json` (Windows).
+- Create a `kaggle.json` file manually in JupyterLab in the project root directory (which is `~`). Then move it to a `.kaggle` folder by (in console since JupyterLab can't see folders that being with `.`):
+    ```
+    chmod 600 kaggle.json  # Advised to run this so it is not visible by other users
+    mv kaggle.json .kaggle/kaggle.json
+    ```
+- Now run the relevant script by:
+    ```
+    chmod +x scripts/fetch_kaggle_dataset.sh
+    scripts/fetch_kaggle_dataset.sh
+    ```
+- **REMEMBER** to `Expire API Token` on Kaggle (or delete the `kaggle.json` from Binder) after running (because Binder cannot be guaranteed to be secure).
+
+<p align="right"><a href="#top">Back to top</a></p>
 
 ## Structure of the repo
 **TODO**: Write this section
 
 ## Tasks
-### Build the packages
-The following will create a *source* distribution and a *wheel* distribution out of a Python package that you have written (and which includes a `setup.py`).
+In some cases, these tasks are dependent on the previous one, so should be carried out in order.
+
+### Train the regression pipeline
 ```
-> python packages/regression_model/setup.py sdist bdist_wheel
+python packages/regression_model/regression_model/train_pipeline.py
+```
+Logs are printed to console, and the model object is added in   `PACKAGE_ROOT / 'trained_models'` as per `packages/regression_model/regression_model/config/config.py`.
+
+### Build the model package
+The following will create a *source* distribution and a *wheel* distribution out of a Python package that you have written (and which includes a `setup.py`), and puts the resulting files in `build/` and `dist/` folders.
+```
+python packages/regression_model/setup.py sdist bdist_wheel
 ```
 
-To install a package (that has been built) locally, use the `-e` switch for `pip`, e.g.:
+Alternatively, we can install a local package as follows:
 ```
-$ pip install -e packages/regression_model
+pip install -e packages/regression_model
 ```
 
 ### Run automated tests
-**TODO**: Write this section
+```
+pytest packages/regression_model/tests  # On the `regression_model` package
+pytest packages/ml_api/tests  # On the `ml_api` package
+```
+
+### Run the API package
+```
+python packages/ml_api/run.py
+```
 
 ### Run continuous integration
 **TODO**: Write this section
 
+<p align="right"><a href="#top">Back to top</a></p>
+
 ## Trouble-shooting
+### Package environment
 There were various problems installing and using `scikit-learn` specifically. 
 
 - The line `pip install -r requirements.txt` failed, although `scikit-learn` appeared to be in the `pip list` for the venv, it was not accessible from Python.
@@ -76,3 +115,7 @@ There were various problems installing and using `scikit-learn` specifically.
     - Inspired by: <https://stackoverflow.com/a/56857828>...
     - ...which links to: <https://stackoverflow.com/a/1880453>
 
+### Binder
+I spent some time trying to get VSCode to work inside JupyterLab on Binder, using the potential solution from here: <https://github.com/betatim/vscode-binder>. However, I was not successful, so concluded it was sufficient to use JupyterLab only. Also see my attempts here: <https://github.com/A-Breeze/binder_tests>.
+
+<p align="right"><a href="#top">Back to top</a></p>
