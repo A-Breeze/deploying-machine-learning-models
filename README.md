@@ -33,7 +33,7 @@ It *should* be possible to run the code in JupyterLab (or another IDE) from your
 All console commands are run from the root folder of this project unless otherwise stated.
 
 ### Start Binder instance
-[![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/A-Breeze/deploying-machine-learning-models/use_binder?urlpath=lab)
+[![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/A-Breeze/deploying-machine-learning-models/fix_CircleCI_tests?urlpath=lab)
 
 ### Package environment
 A conda-env has been created from `envinronment.yml` in Binder is called `notebook` by default. I will use the `venv` that is specified *within* the conda-env.
