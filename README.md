@@ -10,7 +10,8 @@ For the documentation, visit the [course on Udemy](https://www.udemy.com/deploym
     - [Start Binder instance](#Start-Binder-instance)
     - [Package environment](#Package-environment)
     - [Get data for modelling](#Get-data-for-modelling)
-1. [Structure of the repo](#Structure-of-the-repo)
+1. [Structure of the repo and course](#Structure-of-the-repo-and-course)
+    - [Other materials](#Other-materials)
 1. [Tasks](#Tasks)
     - [Train the regression pipeline](#Train-the-regression-pipeline)
     - [Build the model package](#Build-the-model-package)
@@ -56,6 +57,7 @@ Data is required for fitting the model in the `regression_model` package. It is 
 - Create a `kaggle.json` file manually in JupyterLab in the project root directory (which is `~`). Then move it to a `.kaggle` folder by (in console since JupyterLab can't see folders that being with `.`):
     ```
     chmod 600 kaggle.json  # Advised to run this so it is not visible by other users
+    mkdir .kaggle
     mv kaggle.json .kaggle/kaggle.json
     ```
 - Now run the relevant script by:
@@ -67,11 +69,28 @@ Data is required for fitting the model in the `regression_model` package. It is 
 
 <p align="right"><a href="#top">Back to top</a></p>
 
-## Structure of the repo
-**TODO**: Write this section
+## Structure of the repo and course
+*Note*: The structure of the repo changes as we work through the course, so the description here may not be entirely up to date. Section numbers refer to the Udemy course. 
+- `jupyter_notebooks/.` **Section 2**: Notebooks that were originally used to analyse the data and build the model, i.e. the *research environment*. Since then, the main code has been converted to the `regression_model` package (see below), so these are no longer part of the (automated) modelling pipeline. They are kept in the repo as an example of how the inspiration would be kept close to the deployment code (i.e. a *mono-repo*). 
+    - However, the notebook code does not currently run, because the dependencies are not part of the environment specification and the data is not included in the repo.
+- **Section 3**: Considerations for the architecture of the package.
+- `packages/`:
+    - `regression_model`  **Section 4 and 6**: A reproducible pipeline to build the model from source data, including pre-processing.
+    - `ml_api` **Section 7**: Serve the model as a Flask API to be consumed.
+        - `tests/differential_tests/` **Section 9**: **NOT COMPLETE**
+- `scripts/`
+    - `fetch_kaggle_dataset.sh`: Automatically get the data (in this case, from an online Kaggle API).
+    - `publish_model.sh`: Push the model package to an online repo. \[I decided not to do this, to avoid signing up to another service.\]
+- `.circleci` **Section 8**: Configure tasks to be run in Continuous Integration pipeline.
+- `.idea/runConfigurations`: I previously set this up to automate the running of common tasks in PyCharm. I'm no longer using PyCharm, so these are not maintained (but may still work).
+
+### Other materials
+The Udemy course provided slides and notes (not saved in this repo).
+
+<p align="right"><a href="#top">Back to top</a></p>
 
 ## Tasks
-In some cases, these tasks are dependent on the previous one, so should be carried out in order.
+In some cases, these tasks are dependent on the previous one, so should be carried out in order. Note that many of these tasks are carried out in a similar way by the CI integration (see [Run continuous integration](#Run-continuous-integration)).
 
 ### Train the regression pipeline
 ```
@@ -98,11 +117,16 @@ pytest packages/ml_api/tests  # On the `ml_api` package
 
 ### Run the API package
 ```
-python packages/ml_api/run.py
+python packages/ml_api/run.py  # This is *not* working on Binder because it tries to server to the *local* client
 ```
 
 ### Run continuous integration
-**TODO**: Write this section
+This is done on [CircleCI](https://circleci.com/) (for which you need to sign up).
+- See `.circleci/config.yml`. The tasks run each time you push a commit to the GitHub remote repo.
+- To run the tests, you need to provide the Kaggle API Key *privtely* to CircleCI.
+    - Go to the Project settings (`Jobs`, then the little gear wheel by the project name) 
+    - `Build settings` - `Environment variables` - `Add variable`
+    - We want to add `KAGGLE_USERNAME` and `KAGGLE_KEY`
 
 <p align="right"><a href="#top">Back to top</a></p>
 
