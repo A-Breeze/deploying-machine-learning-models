@@ -3,30 +3,72 @@ Fork of repo for the online course Deployment of Machine Learning Models.
 
 For the documentation, visit the [course on Udemy](https://www.udemy.com/deployment-of-machine-learning-models/?couponCode=TIDREPO).
 
-## Setup
-### Environment
-I will use the `venv` that is specified *within* a conda-env `py369`. This conda-env contains only `python=3.6.9`.
+<!--This table of contents is maintained *manually*-->
+## Contents
+1. [Setup](#Setup)
+    - [Start Binder instance](#Start-Binder-instance)
+    - [Package environment](#Package-environment)
+1. [Structure of the repo](#Structure-of-the-repo)
+1. [Tasks](#Tasks)
+    - [Build the packages](#Build-the-packages)
+    - [Run automated tests](#Run-automated-tests)
+    - [Run continuous integration](#Run-continuous-integration)
+1. [Trouble-shooting](#Trouble-shooting)
 
-Commands are (in Anaconda prompt):
+## Setup
+The following describes how to run the repo using JupyterLab on Binder. 
+- Advantage: This will run it in the browser, so there is no prerequisite of software installed on your computer (other than a compatible browser). 
+- Disadvantages:
+    - Security is *not* guaranteed within Binder (as per [here](https://mybinder.readthedocs.io/en/latest/faq.html#can-i-push-data-from-my-binder-session-back-to-my-repository)), so I'll be pushing Git from another location, which involves some manual copy-paste.
+    - The package environment has to be restored each time, which takes some time.
+
+It *should* be possible to run the code in JupyterLab (or another IDE) from your own machine (i.e. not on Binder), but this hasn't been tested. Start the set up from [Package environment](#Package-environment) below.
+
+All console commands are run from the root folder of this project unless otherwise stated.
+
+### Start Binder instance
+[![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/A-Breeze/deploying-machine-learning-models/use_binder?urlpath=lab)
+
+### Package environment
+A conda-env has been created from `envinronment.yml` in Binder is called `notebook` by default. I will use the `venv` that is specified *within* the conda-env.
+
+Commands for the Binder Console (in Linux) are:
 ```
-> cd [to home folder of this project]
-> conda activate py369
-> python -m venv env   # Create new venv called "env"
-> env\Scripts\activate   # Activate env
-> pip install -r requirements.txt   # Requirements for the project
+$ conda activate notebook  # Or `py369` if not on Binder
+$ python -m venv env   # Create new venv called "env"
+$ source env/bin/activate   # Activate env (or `env\Scripts\activate` on Windows)
+$ pip install -r requirements.txt   # Requirements for the project
 # Requirements for the self-contained regression_model package
-> pip install -r packages\regression_model\requirements.txt 
+$ pip install -r packages/regression_model/requirements.txt 
 # Requirements for the API package
-pip install -r packages\ml_api\requirements.txt
+$ pip install -r packages/ml_api/requirements.txt
+```
+
+### Get data
+**TODO**: Write this section
+
+## Structure of the repo
+**TODO**: Write this section
+
+## Tasks
+### Build the packages
+The following will create a *source* distribution and a *wheel* distribution out of a Python package that you have written (and which includes a `setup.py`).
+```
+> python packages/regression_model/setup.py sdist bdist_wheel
 ```
 
 To install a package (that has been built) locally, use the `-e` switch for `pip`, e.g.:
 ```
-> cd [root of the git repo]
-> pip install -e packages\regression_model
+$ pip install -e packages/regression_model
 ```
 
-#### Trouble-shooting
+### Run automated tests
+**TODO**: Write this section
+
+### Run continuous integration
+**TODO**: Write this section
+
+## Trouble-shooting
 There were various problems installing and using `scikit-learn` specifically. 
 
 - The line `pip install -r requirements.txt` failed, although `scikit-learn` appeared to be in the `pip list` for the venv, it was not accessible from Python.
@@ -34,36 +76,3 @@ There were various problems installing and using `scikit-learn` specifically.
     - Inspired by: <https://stackoverflow.com/a/56857828>...
     - ...which links to: <https://stackoverflow.com/a/1880453>
 
-
-### IDE
-I am using PyCharm (Community Edition). The inherited `.gitignore` ignores all of the `.idea/` folder, so not IDE settings will be saved in the repo.
-
-Set the 'Project Interpreter' to be the venv interpreter. This should mean that, when you open the project, the correct interpreter is referenced.
-
-If you want the conda-env to be open in the background, when opening PyCharm, commands are (in Anaconda prompt):
-```
-> cd [to home folder of this project]
-> conda activate py369
-> env\Scripts\activate
-> [location of PyCharm.exe] 
-```
-To get the PyCharm location, right click on the PyCharm desktop icon, then right click again -- select ' Properties'. The path to the `.exe` is in the 'Target:' field.
-
-This ensures that the 'Terminal' is in the conda-env *and* venv. 
-
-### Git
-`.gitignore` was already set up when I cloned the repo. It is very similar to the recommended Python gitignore from here: <https://gitignore.io/api/python>.
-
-This is a "monorepo" (i.e. will hold all work on the product, including various packages). In a Python script, you may want to `import` a module that is saved in the root folder of the specific package that you are in. PyCharm will not be able to the find the module unless it knows that the package root folder is indeed a root (otherwise it will think the only root folder is the main project root). To enable this:
-
-- Right click on the package root folder in the Project view.
-- Select `Mark Directory as...` (near bottom of list) `Source Root`.
-
-From <https://stackoverflow.com/a/35553721>.
-
-### Building a package
-The following will create a *source* distribution and a *wheel* distribution out of a Python package that you have written (and which includes a `setup.py`).
-```
-> cd [root of git repo]
-> python packages\regression_model\setup.py sdist bdist_wheel
-```
