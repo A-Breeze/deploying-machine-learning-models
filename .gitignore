@@ -1,3 +1,18 @@
+# --------------
+# Additional ignore patterns for files created by Binder
+.bash_logout
+.bashrc
+.conda/
+.config/
+.jupyter/
+.local/
+.profile
+
+# Never commit the Kaggle API key
+.kaggle/kaggle.json
+
+# --------------
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
