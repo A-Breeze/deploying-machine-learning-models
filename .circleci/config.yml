@@ -21,23 +21,29 @@ fetch_data: &fetch_data
       chmod +x ./scripts/fetch_kaggle_dataset.sh
       ./scripts/fetch_kaggle_dataset.sh
 
+install_model_requirements: &install_model_requirements
+    run:
+      name: Install model requirements
+      command: |
+        . venv/bin/activate
+        pip install -r packages/regression_model/requirements.txt
+
+train_model: &train_model
+    run:
+      name: Train model
+      command: |
+        . venv/bin/activate
+        PYTHONPATH=./packages/regression_model python3 packages/regression_model/regression_model/train_pipeline.py
+
 jobs:
   test_regression_model:
     <<: *defaults
     steps:
       - checkout
       - *prepare_venv
-      - run:
-          name: Install requirements
-          command: |
-            . venv/bin/activate
-            pip install -r packages/regression_model/requirements.txt
+      - *install_model_requirements
       - *fetch_data
-      - run:
-          name: Train model
-          command: |
-            . venv/bin/activate
-            PYTHONPATH=./packages/regression_model python3 packages/regression_model/regression_model/train_pipeline.py
+      - *train_model
       - run:
           name: Run tests
           command: |
@@ -51,12 +57,14 @@ jobs:
       - restore_cache:
           keys:
             - py-deps-{{ checksum "packages/ml_api/requirements.txt" }}
+      - *prepare_venv
+      - *install_model_requirements
+      - *fetch_data
+      - *train_model
       - run:
           name: Runnning tests
           command: |
-            python3 -m venv venv
             . venv/bin/activate
-            pip install --upgrade pip
             pip install -r packages/ml_api/requirements.txt
             py.test -vv packages/ml_api/tests -m "not differential"
       - save_cache:
@@ -69,17 +77,9 @@ jobs:
     steps:
       - checkout
       - *prepare_venv
-      - run: 
-          name: Install requirements
-          command: |
-            . venv/bin/activate
-            pip install -r packages/regression_model/requirements.txt
+      - *install_model_requirements
       - *fetch_data
-      - run: 
-          name: Train model
-          command: |
-            . venv/bin/activate
-            PYTHONPATH=./packages/regression_model python3 packages/regression_model/regression_model/train_pipeline.py
+      - *train_model      
       - run: 
           name: Publish model to Gemfury
           command: |
@@ -111,12 +111,8 @@ workflows:
   test-all:
     jobs:
       - test_regression_model
-      - test_ml_api:
-          requires:
-            - test_regression_model
-      - section_9_differential_tests:
-          requires:
-            - test_regression_model
+      - test_ml_api
+      - section_9_differential_tests
       - train_and_upload_regression_model:
           requires:
             - test_regression_model
