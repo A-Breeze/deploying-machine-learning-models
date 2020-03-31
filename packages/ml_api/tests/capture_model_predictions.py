@@ -26,7 +26,7 @@ def capture_predictions() -> None:
     # save predictions for the test dataset
     predictions_df = pd.DataFrame(predictions)
 
-    # hack here to save the file to the regression model
+    # hack here to save the file to the ml_api model
     # package of the repo, not the installed package
     predictions_df.to_csv(f'{config.PACKAGE_ROOT}/{save_file}')
 
