@@ -49,6 +49,12 @@ jobs:
           command: |
             . venv/bin/activate
             py.test -vv packages/regression_model/tests
+      - persist_to_workspace:
+        # Keep the model object that has been built for future tests
+        root: packages/regression_model/regression_model
+        # Must be relative path from root
+        paths:
+          - trained_models/*.pkl
 
   test_ml_api:
     <<: *defaults
@@ -57,10 +63,10 @@ jobs:
       - restore_cache:
           keys:
             - py-deps-{{ checksum "packages/ml_api/requirements.txt" }}
+      - attach_workspace:
+          # Must be absolute path or relative path from working_directory
+          at: packages/regression_model/regression_model/trained_models
       - *prepare_venv
-      - *install_model_requirements
-      - *fetch_data
-      - *train_model
       - run:
           name: Runnning tests
           command: |
@@ -114,7 +120,9 @@ workflows:
   test-all:
     jobs:
       - test_regression_model
-      - test_ml_api
+      - test_ml_api:
+        requires:
+          - test_regression_model
       - section_9_differential_tests
       - train_and_upload_regression_model:
           requires:
