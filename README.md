@@ -33,7 +33,7 @@ It *should* be possible to run the code in JupyterLab (or another IDE) from your
 All console commands are run from the root folder of this project unless otherwise stated.
 
 ### Start Binder instance
-[![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/A-Breeze/deploying-machine-learning-models/build_v020?urlpath=lab)
+[![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/A-Breeze/deploying-machine-learning-models/run_api_binder?urlpath=lab)
 
 ### Package environment
 A conda-env has been created from `envinronment.yml` in Binder is called `notebook` by default. I will use the `venv` that is specified *within* the conda-env.
@@ -134,7 +134,16 @@ pytest packages/ml_api/tests -m differential
 ```
 PYTHONPATH=./packages/ml_api python packages/ml_api/run.py  
 ```
-**TODO**: This is *not* working on Binder because it tries to server to the *local* client. Might be able to achieve this using the JupyterLab extension *jupyter-server-proxy* (see: <https://jupyter-server-proxy.readthedocs.io/en/latest/arbitrary-ports-hosts.html>).
+
+#### Running the API from JupyterLab
+The resulting API will be served at: `<notebook-base>/proxy/127.0.0.1:5000`
+- That is, remove `/lab` from the URL and replace it with `/proxy/127.0.0.1:5000`.
+- Go to the following endpoints to check it is working:
+    - `/health`
+    - `/version`
+- Also watch the server console as it logs your interactions with the API.
+
+As per: <https://jupyter-server-proxy.readthedocs.io/en/latest/arbitrary-ports-hosts.html>.
 
 ### Run continuous integration
 This is done on [CircleCI](https://circleci.com/) (for which you need to sign up).
