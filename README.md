@@ -33,7 +33,7 @@ It *should* be possible to run the code in JupyterLab (or another IDE) from your
 All console commands are run from the root folder of this project unless otherwise stated.
 
 ### Start Binder instance
-[![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/A-Breeze/deploying-machine-learning-models/use_binder?urlpath=lab)
+[![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/A-Breeze/deploying-machine-learning-models/build_v020?urlpath=lab)
 
 ### Package environment
 A conda-env has been created from `envinronment.yml` in Binder is called `notebook` by default. I will use the `venv` that is specified *within* the conda-env.
@@ -94,17 +94,19 @@ In some cases, these tasks are dependent on the previous one, so should be carri
 
 ### Train the regression pipeline
 ```
-python packages/regression_model/regression_model/train_pipeline.py
+PYTHONPATH=./packages/regression_model python packages/regression_model/regression_model/train_pipeline.py
 ```
 Logs are printed to console, and the model object is added in   `PACKAGE_ROOT / 'trained_models'` as per `packages/regression_model/regression_model/config/config.py`.
 
 ### Build the model package
 The following will create a *source* distribution and a *wheel* distribution out of a Python package that you have written (and which includes a `setup.py`), and puts the resulting files in `build/` and `dist/` folders.
 ```
-python packages/regression_model/setup.py sdist bdist_wheel
+cd packages/regression_model 
+python setup.py sdist bdist_wheel
+cd ../..
 ```
 
-Alternatively, we can install a local package as follows:
+Alternatively, we can install a local package (without needing to build and then install) as follows:
 ```
 pip install -e packages/regression_model
 ```
@@ -112,13 +114,27 @@ pip install -e packages/regression_model
 ### Run automated tests
 ```
 pytest packages/regression_model/tests  # On the `regression_model` package
-pytest packages/ml_api/tests  # On the `ml_api` package
+pytest packages/ml_api/tests -m "not differential"  # On the `ml_api` package, excluding differential tests
+```
+
+To run the *differential* tests, we need a previous version of the model package to compare against. In the course, each package build version was hosted externally, but we can include them in the Git repo (to save signing up to another external provider). So, to run the differential tests:
+- You need to have built a previous version of the `regression_model` package and committed it to the repo. I've saved the *wheel* distribution in `packages/regression_model/dist/<package_name>-<version>.tar.gz`.
+- You need to include this version as a package requirement for the differential tests, as per: `packages/ml_api/diff_test_requirements.txt`...
+- ...and you need to install it (overwriting the usual `ml_api` requirements).
+
+You can then load the previous model, capture predictions, load the current model, and compare the predictions as follows:
+```
+pip install -r packages/ml_api/diff_test_requirements.txt
+PYTHONPATH=./packages/ml_api python3 packages/ml_api/tests/capture_model_predictions.py
+pip install -r packages/ml_api/requirements.txt
+pytest packages/ml_api/tests -m differential
 ```
 
 ### Run the API package
 ```
-python packages/ml_api/run.py  # This is *not* working on Binder because it tries to server to the *local* client
+PYTHONPATH=./packages/ml_api python packages/ml_api/run.py  
 ```
+**TODO**: This is *not* working on Binder because it tries to server to the *local* client. Might be able to achieve this using the JupyterLab extension *jupyter-server-proxy* (see: <https://jupyter-server-proxy.readthedocs.io/en/latest/arbitrary-ports-hosts.html>).
 
 ### Run continuous integration
 This is done on [CircleCI](https://circleci.com/) (for which you need to sign up).

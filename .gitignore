@@ -1,12 +1,15 @@
 # --------------
 # Additional ignore patterns for files created by Binder
+.bash_history
 .bash_logout
 .bashrc
 .conda/
 .config/
+.ipython/
 .jupyter/
 .local/
 .profile
+.python_history
 
 # Never commit the Kaggle API key
 .kaggle/kaggle.json
@@ -25,7 +28,7 @@ __pycache__/
 .Python
 build/
 develop-eggs/
-dist/
+dist/*
 downloads/
 eggs/
 .eggs/
@@ -131,12 +134,17 @@ sample_submission.csv
 # all logs
 logs/
 
-# trained models (will be created in CI)
-packages/regression_model/regression_model/trained_models/*.pkl
-
 # ------------------------
 # AB Amendments
+# trained models (will be created in CI)
+packages/regression_model/regression_model/trained_models/*.pkl
+# ...but *include* previous built model package versions, for differential testing
+# See here for gitignore negation patterns: <https://www.atlassian.com/git/tutorials/saving-changes/gitignore>
+packages/regression_model/dist/*
+!packages/regression_model/dist/regression_model-*.tar.gz
+
 # Include any run configurations that are marked to 'Share'
 !.idea/runConfigurations/
 
-# See here for negating the gitignore for a specified subfolder: <https://stackoverflow.com/a/5534865>
+# Ignore VSCode settings
+.vscode/
