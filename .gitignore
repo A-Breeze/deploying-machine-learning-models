@@ -1,3 +1,18 @@
+# --------------
+# Additional ignore patterns for files created by Binder
+.bash_logout
+.bashrc
+.conda/
+.config/
+.jupyter/
+.local/
+.profile
+
+# Never commit the Kaggle API key
+.kaggle/kaggle.json
+
+# --------------
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
@@ -109,8 +124,17 @@ venv.bak/
 # datafiles
 train.csv
 test.csv
+test_data_predictions.csv
 data_description.txt
 sample_submission.csv
+
+# all logs
+logs/
+
+# trained models (will be created in CI)
+packages/regression_model/regression_model/trained_models/*.pkl
+# ...but *include* previous built model package versions, for differential testing
+!dist/regression_model-0.1.0.tar.gz
 
 # ------------------------
 # AB Amendments
@@ -118,3 +142,6 @@ sample_submission.csv
 !.idea/runConfigurations/
 
 # See here for negating the gitignore for a specified subfolder: <https://stackoverflow.com/a/5534865>
+
+# Ignore VSCode settings
+.vscode/
