@@ -1,12 +1,15 @@
 # --------------
 # Additional ignore patterns for files created by Binder
+.bash_history
 .bash_logout
 .bashrc
 .conda/
 .config/
+.ipython/
 .jupyter/
 .local/
 .profile
+.python_history
 
 # Never commit the Kaggle API key
 .kaggle/kaggle.json
@@ -137,7 +140,8 @@ logs/
 packages/regression_model/regression_model/trained_models/*.pkl
 # ...but *include* previous built model package versions, for differential testing
 # See here for gitignore negation patterns: <https://www.atlassian.com/git/tutorials/saving-changes/gitignore>
-!dist/regression_model-*.whl
+packages/regression_model/dist/*
+!packages/regression_model/dist/regression_model-*.whl
 
 # Include any run configurations that are marked to 'Share'
 !.idea/runConfigurations/

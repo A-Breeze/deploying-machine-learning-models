@@ -94,14 +94,16 @@ In some cases, these tasks are dependent on the previous one, so should be carri
 
 ### Train the regression pipeline
 ```
-python packages/regression_model/regression_model/train_pipeline.py
+PYTHONPATH=./packages/regression_model python packages/regression_model/regression_model/train_pipeline.py
 ```
 Logs are printed to console, and the model object is added in   `PACKAGE_ROOT / 'trained_models'` as per `packages/regression_model/regression_model/config/config.py`.
 
 ### Build the model package
 The following will create a *source* distribution and a *wheel* distribution out of a Python package that you have written (and which includes a `setup.py`), and puts the resulting files in `build/` and `dist/` folders.
 ```
-python packages/regression_model/setup.py sdist bdist_wheel
+cd packages/regression_model 
+python setup.py sdist bdist_wheel
+cd ../..
 ```
 
 Alternatively, we can install a local package (without needing to build and then install) as follows:
@@ -126,7 +128,7 @@ To run the *differential* tests, we need a previous version of the model package
 
 ### Run the API package
 ```
-python packages/ml_api/run.py  # This is *not* working on Binder because it tries to server to the *local* client
+PYTHONPATH=./packages/ml_api python packages/ml_api/run.py  # This is *not* working on Binder because it tries to server to the *local* client
 ```
 
 ### Run continuous integration
