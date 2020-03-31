@@ -104,7 +104,7 @@ The following will create a *source* distribution and a *wheel* distribution out
 python packages/regression_model/setup.py sdist bdist_wheel
 ```
 
-Alternatively, we can install a local package as follows:
+Alternatively, we can install a local package (without needing to build and then install) as follows:
 ```
 pip install -e packages/regression_model
 ```
@@ -112,8 +112,17 @@ pip install -e packages/regression_model
 ### Run automated tests
 ```
 pytest packages/regression_model/tests  # On the `regression_model` package
-pytest packages/ml_api/tests  # On the `ml_api` package
+pytest packages/ml_api/tests -m "not differential"  # On the `ml_api` package, excluding differential tests
 ```
+
+To run the *differential* tests, we need a previous version of the model package to compare against. In the course, each package build version was hosted externally, but we can include them in the Git repo (to save signing up to another external provider). So, to run the differential tests:
+- You need to have built a previous version of the `regression_model` package and committed it to the repo. I've saved the *source* distribution in `sdist/<package_name-version>.tar.gz`.
+- You need to include this version as a package requirement for the differential tests, as per: `packages/ml_api/diff_test_requirements.txt`...
+- ...and you need to install it (overwriting the usual `ml_api` requirements): 
+    ```
+    pip install -r packages/ml_api/diff_test_requirements.txt
+    pytest packages/ml_api/tests -m differential   # Run the differential tests only
+    ```
 
 ### Run the API package
 ```
