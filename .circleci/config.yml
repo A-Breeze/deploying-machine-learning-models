@@ -3,7 +3,7 @@ version: 2
 defaults: &defaults
   docker:
     - image: circleci/python:3.7.2
-  working_directory: /project
+  working_directory: ~/project
 
 prepare_venv: &prepare_venv
   run:
@@ -65,7 +65,7 @@ jobs:
             - py-deps-{{ checksum "packages/ml_api/requirements.txt" }}
       - attach_workspace:
           # Must be absolute path or relative path from working_directory
-          at: /project/packages/regression_model/regression_model
+          at: ~/project/packages/regression_model/regression_model
       - *prepare_venv
       - run:
           name: Runnning tests
