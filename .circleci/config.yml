@@ -52,7 +52,7 @@ jobs:
       - persist_to_workspace:
           # Keep the model object that has been built for future tests
           root: packages/regression_model/regression_model
-          # Must be relative path from root
+          # Relative path from root
           paths:
             - datasets/test.csv
             - trained_models
@@ -65,7 +65,7 @@ jobs:
           keys:
             - py-deps-{{ checksum "packages/ml_api/requirements.txt" }}
       - attach_workspace:
-          # Must be absolute path or relative path from working_directory
+          # Get workspace following model training step
           at: ~/project/packages/regression_model/regression_model
       - *prepare_venv
       - run:
@@ -83,10 +83,10 @@ jobs:
     <<: *defaults
     steps:
       - checkout
+      - attach_workspace:
+          # Get workspace following model training step
+          at: ~/project/packages/regression_model/regression_model
       - *prepare_venv
-      - *install_model_requirements
-      - *fetch_data
-      - *train_model      
       - run: 
           name: Publish model to Gemfury
           command: |
@@ -99,10 +99,10 @@ jobs:
     <<: *defaults
     steps:
       - checkout
+      - attach_workspace:
+          # Get workspace following model training step
+          at: ~/project/packages/regression_model/regression_model
       - *prepare_venv
-      - *install_model_requirements
-      - *fetch_data
-      - *train_model
       - run:
           name: Capturing previous model predictions
           command: |
@@ -125,9 +125,10 @@ workflows:
           requires:
             - test_regression_model
       - section_9_differential_tests
+          requires:
+            - test_regression_model      
       - train_and_upload_regression_model:
           requires:
-            - test_regression_model
             - test_ml_api
             - section_9_differential_tests
           # filters:
