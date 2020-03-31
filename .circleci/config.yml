@@ -93,6 +93,9 @@ jobs:
     steps:
       - checkout
       - *prepare_venv
+      - *install_model_requirements
+      - *fetch_data
+      - *train_model
       - run:
           name: Capturing previous model predictions
           command: |
