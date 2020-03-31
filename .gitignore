@@ -137,7 +137,7 @@ logs/
 packages/regression_model/regression_model/trained_models/*.pkl
 # ...but *include* previous built model package versions, for differential testing
 # See here for gitignore negation patterns: <https://www.atlassian.com/git/tutorials/saving-changes/gitignore>
-!dist/regression_model-*.tar.gz
+!dist/regression_model-*.whl
 
 # Include any run configurations that are marked to 'Share'
 !.idea/runConfigurations/

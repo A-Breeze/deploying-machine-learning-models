@@ -116,7 +116,7 @@ pytest packages/ml_api/tests -m "not differential"  # On the `ml_api` package, e
 ```
 
 To run the *differential* tests, we need a previous version of the model package to compare against. In the course, each package build version was hosted externally, but we can include them in the Git repo (to save signing up to another external provider). So, to run the differential tests:
-- You need to have built a previous version of the `regression_model` package and committed it to the repo. I've saved the *source* distribution in `sdist/<package_name-version>.tar.gz`.
+- You need to have built a previous version of the `regression_model` package and committed it to the repo. I've saved the *wheel* distribution in `dist/<package_name>-<version>-<etc>.whl`.
 - You need to include this version as a package requirement for the differential tests, as per: `packages/ml_api/diff_test_requirements.txt`...
 - ...and you need to install it (overwriting the usual `ml_api` requirements): 
     ```
