@@ -54,7 +54,7 @@ jobs:
           root: packages/regression_model/regression_model
           # Must be relative path from root
           paths:
-            - trained_models/*.pkl
+            - trained_models/
 
   test_ml_api:
     <<: *defaults
@@ -65,7 +65,7 @@ jobs:
             - py-deps-{{ checksum "packages/ml_api/requirements.txt" }}
       - attach_workspace:
           # Must be absolute path or relative path from working_directory
-          at: packages/regression_model/regression_model/trained_models
+          at: ~/project/packages/regression_model/regression_model/trained_models
       - *prepare_venv
       - run:
           name: Runnning tests
