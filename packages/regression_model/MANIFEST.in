@@ -1,8 +1,10 @@
 # Given that this package distribution will be committed in the Git repo
-# I decided not to include the source data files. Although if I were pushing it to 
-# a remote package reprository, I *would* include the source files.
+# I decided not to include the source data files where possible. 
+# Although if I were pushing it to a remote package reprository, 
+# I *would* include the source data files.
 # include regression_model/datasets/train.csv
-# include regression_model/datasets/test.csv
+# The test data *is* needed for the differential tests
+include regression_model/datasets/test.csv
 
 # Include trained model object
 include regression_model/trained_models/*.pkl
