@@ -3,7 +3,7 @@ version: 2
 defaults: &defaults
   docker:
     - image: circleci/python:3.7.2
-  working_directory: ~/project
+  working_directory: /project
 
 prepare_venv: &prepare_venv
   run:
@@ -51,10 +51,10 @@ jobs:
             py.test -vv packages/regression_model/tests
       - persist_to_workspace:
           # Keep the model object that has been built for future tests
-          root: packages/regression_model/regression_model
+          root: packages/regression_model/regression_model/trained_models
           # Must be relative path from root
           paths:
-            - trained_models/
+            - *.pkl
 
   test_ml_api:
     <<: *defaults
@@ -65,7 +65,7 @@ jobs:
             - py-deps-{{ checksum "packages/ml_api/requirements.txt" }}
       - attach_workspace:
           # Must be absolute path or relative path from working_directory
-          at: ~/project/packages/regression_model/regression_model/trained_models
+          at: /project/packages/regression_model/regression_model/trained_models
       - *prepare_venv
       - run:
           name: Runnning tests
