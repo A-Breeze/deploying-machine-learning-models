@@ -8,6 +8,7 @@
 .ipython/
 .jupyter/
 .local/
+.npm/
 .profile
 .python_history
 

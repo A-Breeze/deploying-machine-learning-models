@@ -134,7 +134,16 @@ pytest packages/ml_api/tests -m differential
 ```
 PYTHONPATH=./packages/ml_api python packages/ml_api/run.py  
 ```
-**TODO**: This is *not* working on Binder because it tries to server to the *local* client. Might be able to achieve this using the JupyterLab extension *jupyter-server-proxy* (see: <https://jupyter-server-proxy.readthedocs.io/en/latest/arbitrary-ports-hosts.html>).
+
+#### Running the API from JupyterLab
+The resulting API will be served at: `<notebook-base>/proxy/127.0.0.1:5000`
+- That is, remove `/lab` from the URL and replace it with `/proxy/127.0.0.1:5000`.
+- Go to the following endpoints to check it is working:
+    - `/health`
+    - `/version`
+- Also watch the server console as it logs your interactions with the API.
+
+As per: <https://jupyter-server-proxy.readthedocs.io/en/latest/arbitrary-ports-hosts.html>.
 
 ### Run continuous integration
 This is done on [CircleCI](https://circleci.com/) (for which you need to sign up).
