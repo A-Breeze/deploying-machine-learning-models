@@ -128,8 +128,9 @@ To run the *differential* tests, we need a previous version of the model package
 
 ### Run the API package
 ```
-PYTHONPATH=./packages/ml_api python packages/ml_api/run.py  # This is *not* working on Binder because it tries to server to the *local* client
+PYTHONPATH=./packages/ml_api python packages/ml_api/run.py  
 ```
+**TODO**: This is *not* working on Binder because it tries to server to the *local* client. Might be able to achieve this using the JupyterLab extension *jupyter-server-proxy* (see: <https://jupyter-server-proxy.readthedocs.io/en/latest/arbitrary-ports-hosts.html>).
 
 ### Run continuous integration
 This is done on [CircleCI](https://circleci.com/) (for which you need to sign up).
