@@ -140,3 +140,6 @@ packages/regression_model/regression_model/trained_models/*.pkl
 !.idea/runConfigurations/
 
 # See here for negating the gitignore for a specified subfolder: <https://stackoverflow.com/a/5534865>
+
+# Ignore VSCode settings
+.vscode/
