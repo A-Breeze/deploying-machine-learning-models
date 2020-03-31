@@ -2,7 +2,7 @@
 # Deployment of Machine Learning Models
 Fork of repo for the online course Deployment of Machine Learning Models.
 
-For the documentation, visit the [course on Udemy](https://www.udemy.com/deployment-of-machine-learning-models/?couponCode=TIDREPO).
+For the documentation, visit the [course on Udemy](https://www.udemy.com/deployment-of-machine-learning-models/).
 
 <!--This table of contents is maintained *manually*-->
 ## Contents
@@ -16,6 +16,7 @@ For the documentation, visit the [course on Udemy](https://www.udemy.com/deploym
     - [Train the regression pipeline](#Train-the-regression-pipeline)
     - [Build the model package](#Build-the-model-package)
     - [Run automated tests](#Run-automated-tests)
+    - [Run the API package](#Run-the-API-package)
     - [Run continuous integration](#Run-continuous-integration)
 1. [Trouble-shooting](#Trouble-shooting)
 
