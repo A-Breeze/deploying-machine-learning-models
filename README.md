@@ -49,10 +49,18 @@ python -m venv env   # Create new venv called "env"
 source env/bin/activate   # Activate env (or `env\Scripts\activate` on Windows)
 pip install -r requirements_binder.txt   # Requirements for the project, excluding Jupyter
 # Requirements for the self-contained regression_model package
-pip install -r packages/regression_model/requirements.txt 
-# Requirements for the API package
-pip install -r packages/ml_api/requirements.txt
+pip install -r packages/regression_model/requirements.txt
 ```
+
+To run the API package, there are two options:
+1. Use the *current development* version of the `regression_model` package. For this to work, we must train the regression model (following the steps below) before starting the API:
+    ```
+    pip install -r packages/ml_api/requirements.txt
+    ```
+1. Use the most recently *published* (i.e. built, and committed to the repo) version of the `regression_model` package. THe API can then be used immediately (see [Run the API package](#Run-the-API-package) below):
+    ```
+    pip install -r packages/ml_api/diff_test_requirements.txt
+    ```
 
 ### Get data for modelling
 Data is required for fitting the model in the `regression_model` package. It is downloaded from Kaggle using the Kaggle CLI. For this we need an API key as per <https://www.kaggle.com/docs/api>.
@@ -146,6 +154,9 @@ The resulting API will be served at: `<notebook-base>/proxy/127.0.0.1:5000`
     - `/health`
     - `/version`
 - Also watch the server console as it logs your interactions with the API.
+- In addition, the logs are saved (but ignored by the Git repo) to the following location: `packages/ml_api/logs/ml_api.log`
+    - This location `LOG_FILE` is a configuration setting from `packages/ml_api/api/config.py`.
+    - Also in the config file, we define the message level that will go to the console `console_handler.setLevel()` and to the file `file_handler.setLevel()`. Both of these should be greater than the `logger.setLevel()` within `get_logger()`.
 
 As per: <https://jupyter-server-proxy.readthedocs.io/en/latest/arbitrary-ports-hosts.html>.
 
