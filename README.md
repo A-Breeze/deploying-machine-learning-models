@@ -1,4 +1,7 @@
 <a name="top"></a>
+
+[![A-Breeze](https://circleci.com/gh/A-Breeze/deploying-machine-learning-models.svg?style=shield)](https://circleci.com/gh/A-Breeze/deploying-machine-learning-models)
+
 # Deployment of Machine Learning Models
 Fork of repo for the online course Deployment of Machine Learning Models.
 
