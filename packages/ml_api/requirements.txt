@@ -1,15 +1,5 @@
-# AB note: Section 8.4 recommends using GemFury, but I decided not to.
-# --extra-index-url=${PIP_EXTRA_INDEX_URL}
+# Common requirements for the API package *excluding* the model package...
+-r common_requirements.txt
 
-# api
-flask==1.0.2
-
-# schema validation
-marshmallow==2.17.0
-
-# local regression_model package 
-# i.e. this is the current version, as opposed to the previous version used for differential tests
--e "packages/regression_model"
-
-# Deployment
-gunicorn==19.9.0
+# ...plus *current* model version that is committed in the repo
+./packages/regression_model/dist/regression_model-1.0.0.tar.gz
