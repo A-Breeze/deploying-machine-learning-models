@@ -1,32 +1,178 @@
+<a name="top"></a>
+
+[![A-Breeze](https://circleci.com/gh/A-Breeze/deploying-machine-learning-models.svg?style=shield)](https://circleci.com/gh/A-Breeze/deploying-machine-learning-models)
+
 # Deployment of Machine Learning Models
 Fork of repo for the online course Deployment of Machine Learning Models.
 
-For the documentation, visit the [course on Udemy](https://www.udemy.com/deployment-of-machine-learning-models/?couponCode=TIDREPO).
+For the documentation, visit the [course on Udemy](https://www.udemy.com/deployment-of-machine-learning-models/).
+
+<!--This table of contents is maintained *manually*-->
+## Contents
+1. [Setup](#Setup)
+    - [Start Binder instance](#Start-Binder-instance)
+    - [Package environment](#Package-environment)
+    - [Get data for modelling](#Get-data-for-modelling)
+1. [Structure of the repo and course](#Structure-of-the-repo-and-course)
+    - [Other materials](#Other-materials)
+1. [Tasks](#Tasks)
+    - [Train the regression pipeline](#Train-the-regression-pipeline)
+    - [Build the model package](#Build-the-model-package)
+    - [Run automated tests](#Run-automated-tests)
+    - [Run the API package](#Run-the-API-package)
+    - [Run continuous integration](#Run-continuous-integration)
+1. [Trouble-shooting](#Trouble-shooting)
+1. [Further ideas](#Further-ideas)
+
+<p align="right"><a href="#top">Back to top</a></p>
 
 ## Setup
-### Environment
-I will use the `venv` that is specified *within* a conda-env `py369`. This conda-env contains only `python=3.6.9`.
+The following describes how to run the repo using JupyterLab on Binder. 
+- Advantage: This will run it in the browser, so there is no prerequisite of software installed on your computer (other than a compatible browser). 
+- Disadvantages:
+    - Security is *not* guaranteed within Binder (as per [here](https://mybinder.readthedocs.io/en/latest/faq.html#can-i-push-data-from-my-binder-session-back-to-my-repository)), so I'll be pushing Git from another location, which involves some manual copy-paste.
+    - The package environment has to be restored each time, which takes some time.
 
-Commands are (in Anaconda prompt):
+It *should* be possible to run the code in JupyterLab (or another IDE) from your own machine (i.e. not on Binder), but this hasn't been tested. Start the set up from [Package environment](#Package-environment) below.
+
+All console commands are run from the root folder of this project unless otherwise stated.
+
+### Start Binder instance
+[![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/A-Breeze/deploying-machine-learning-models/master?urlpath=lab)
+
+### Package environment
+A conda-env has been created from `envinronment.yml` in Binder is called `notebook` by default. I will use the `venv` that is specified *within* the conda-env.
+
+Commands for the Binder Console (in Linux) are:
 ```
-> cd [to home folder of this project]
-> conda activate py369
-> python -m venv env   # Create new venv called "env"
-> env\Scripts\activate   # Activate env
-> pip install -r requirements.txt   # Requirements for the project
+conda activate notebook  # Or `py369` if not on Binder
+python -m venv env   # Create new venv called "env"
+source env/bin/activate   # Activate env (or `env\Scripts\activate` on Windows)
+pip install -r requirements_binder.txt   # Requirements for the project, excluding Jupyter
 # Requirements for the self-contained regression_model package
-> pip install -r packages\regression_model\requirements.txt 
-# Requirements for the API package
-pip install -r packages\ml_api\requirements.txt
+pip install -r packages/regression_model/requirements.txt
 ```
 
-To install a package (that has been built) locally, use the `-e` switch for `pip`, e.g.:
+To run the API package, there are two options:
+1. Use the *current development* version of the `regression_model` package. For this to work, we must train the regression model (following the steps below) before starting the API:
+    ```
+    pip install -r packages/ml_api/requirements.txt
+    ```
+1. Use the most recently *published* (i.e. built, and committed to the repo) version of the `regression_model` package. THe API can then be used immediately (see [Run the API package](#Run-the-API-package) below):
+    ```
+    pip install -r packages/ml_api/diff_test_requirements.txt
+    ```
+
+### Get data for modelling
+Data is required for fitting the model in the `regression_model` package. It is downloaded from Kaggle using the Kaggle CLI. For this we need an API key as per <https://www.kaggle.com/docs/api>.
+- Get an API Key by signing in to Kaggle and go to: `My Account` - `API` section - `Create new API Token`. 
+    - This downloads a `kaggle.json` which should normally be saved at `~/.kaggle/kaggle.json` (Linux) or `C:\Users<Windows-username>.kaggle\kaggle.json` (Windows).
+- Create a `kaggle.json` file manually in JupyterLab in the project root directory (which is `~`). Then move it to a `.kaggle` folder by (in console since JupyterLab can't see folders that being with `.`):
+    ```
+    chmod 600 kaggle.json  # Advised to run this so it is not visible by other users
+    mkdir .kaggle
+    mv kaggle.json .kaggle/kaggle.json
+    ```
+- Now run the relevant script by:
+    ```
+    chmod +x scripts/fetch_kaggle_dataset.sh
+    scripts/fetch_kaggle_dataset.sh
+    ```
+- **REMEMBER** to `Expire API Token` on Kaggle (or delete the `kaggle.json` from Binder) after running (because Binder cannot be guaranteed to be secure).
+
+<p align="right"><a href="#top">Back to top</a></p>
+
+## Structure of the repo and course
+*Note*: The structure of the repo changes as we work through the course, so the description here may not be entirely up to date. Section numbers refer to the Udemy course. 
+- `jupyter_notebooks/.` **Section 2**: Notebooks that were originally used to analyse the data and build the model, i.e. the *research environment*. Since then, the main code has been converted to the `regression_model` package (see below), so these are no longer part of the (automated) modelling pipeline. They are kept in the repo as an example of how the inspiration would be kept close to the deployment code (i.e. a *mono-repo*). 
+    - However, the notebook code does not currently run, because the dependencies are not part of the environment specification and the data is not included in the repo.
+- **Section 3**: Considerations for the architecture of the package.
+- `packages/`:
+    - `regression_model`  **Section 4 and 6**: A reproducible pipeline to build the model from source data, including pre-processing.
+    - `ml_api` **Section 7**: Serve the model as a Flask API to be consumed.
+        - `tests/differential_tests/` **Section 9**: **NOT COMPLETE**
+- `scripts/`
+    - `fetch_kaggle_dataset.sh`: Automatically get the data (in this case, from an online Kaggle API).
+    - `publish_model.sh`: Push the model package to an online repo. \[I decided not to do this, to avoid signing up to another service.\]
+- `.circleci` **Section 8**: Configure tasks to be run in Continuous Integration pipeline.
+- `.idea/runConfigurations`: I previously set this up to automate the running of common tasks in PyCharm. I'm no longer using PyCharm, so these are not maintained (but may still work).
+
+### Other materials
+The Udemy course provided slides and notes (not saved in this repo).
+
+<p align="right"><a href="#top">Back to top</a></p>
+
+## Tasks
+In some cases, these tasks are dependent on the previous one, so should be carried out in order. Note that many of these tasks are carried out in a similar way by the CI integration (see [Run continuous integration](#Run-continuous-integration)).
+
+### Train the regression pipeline
 ```
-> cd [root of the git repo]
-> pip install -e packages\regression_model
+PYTHONPATH=./packages/regression_model python packages/regression_model/regression_model/train_pipeline.py
+```
+Logs are printed to console, and the model object is added in   `PACKAGE_ROOT / 'trained_models'` as per `packages/regression_model/regression_model/config/config.py`.
+
+### Build the model package
+The following will create a *source* distribution and a *wheel* distribution out of a Python package that you have written (and which includes a `setup.py`), and puts the resulting files in `build/` and `dist/` folders.
+```
+cd packages/regression_model 
+python setup.py sdist bdist_wheel
+cd ../..
 ```
 
-#### Trouble-shooting
+Alternatively, we can install a local package (without needing to build and then install) as follows:
+```
+pip install -e packages/regression_model
+```
+
+### Run automated tests
+```
+pytest packages/regression_model/tests  # On the `regression_model` package
+pytest packages/ml_api/tests -m "not differential"  # On the `ml_api` package, excluding differential tests
+```
+
+To run the *differential* tests, we need a previous version of the model package to compare against. In the course, each package build version was hosted externally, but we can include them in the Git repo (to save signing up to another external provider). So, to run the differential tests:
+- You need to have built a previous version of the `regression_model` package and committed it to the repo. I've saved the *wheel* distribution in `packages/regression_model/dist/<package_name>-<version>.tar.gz`.
+- You need to include this version as a package requirement for the differential tests, as per: `packages/ml_api/diff_test_requirements.txt`...
+- ...and you need to install it (overwriting the usual `ml_api` requirements).
+
+You can then load the previous model, capture predictions, load the current model, and compare the predictions as follows:
+```
+pip install -r packages/ml_api/diff_test_requirements.txt
+PYTHONPATH=./packages/ml_api python3 packages/ml_api/tests/capture_model_predictions.py
+pip install -r packages/ml_api/requirements.txt
+pytest packages/ml_api/tests -m differential
+```
+
+### Run the API package
+```
+PYTHONPATH=./packages/ml_api python packages/ml_api/run.py  
+```
+
+#### Running the API from JupyterLab
+The resulting API will be served at: `<notebook-base>/proxy/127.0.0.1:5000`
+- That is, remove `/lab` from the URL and replace it with `/proxy/127.0.0.1:5000`.
+- Go to the following endpoints to check it is working:
+    - `/health`
+    - `/version`
+- Also watch the server console as it logs your interactions with the API.
+- In addition, the logs are saved (but ignored by the Git repo) to the following location: `packages/ml_api/logs/ml_api.log`
+    - This location `LOG_FILE` is a configuration setting from `packages/ml_api/api/config.py`.
+    - Also in the config file, we define the message level that will go to the console `console_handler.setLevel()` and to the file `file_handler.setLevel()`. Both of these should be greater than the `logger.setLevel()` within `get_logger()`.
+
+As per: <https://jupyter-server-proxy.readthedocs.io/en/latest/arbitrary-ports-hosts.html>.
+
+### Run continuous integration
+This is done on [CircleCI](https://circleci.com/) (for which you need to sign up).
+- See `.circleci/config.yml`. The tasks run each time you push a commit to the GitHub remote repo.
+- To run the tests, you need to provide the Kaggle API Key *privtely* to CircleCI.
+    - Go to the Project settings (`Jobs`, then the little gear wheel by the project name) 
+    - `Build settings` - `Environment variables` - `Add variable`
+    - We want to add `KAGGLE_USERNAME` and `KAGGLE_KEY`
+
+<p align="right"><a href="#top">Back to top</a></p>
+
+## Trouble-shooting
+### Package environment
 There were various problems installing and using `scikit-learn` specifically. 
 
 - The line `pip install -r requirements.txt` failed, although `scikit-learn` appeared to be in the `pip list` for the venv, it was not accessible from Python.
@@ -34,36 +180,12 @@ There were various problems installing and using `scikit-learn` specifically.
     - Inspired by: <https://stackoverflow.com/a/56857828>...
     - ...which links to: <https://stackoverflow.com/a/1880453>
 
+### Binder
+I spent some time trying to get VSCode to work inside JupyterLab on Binder, using the potential solution from here: <https://github.com/betatim/vscode-binder>. However, I was not successful, so concluded it was sufficient to use JupyterLab only. Also see my attempts here: <https://github.com/A-Breeze/binder_tests>.
 
-### IDE
-I am using PyCharm (Community Edition). The inherited `.gitignore` ignores all of the `.idea/` folder, so not IDE settings will be saved in the repo.
+<p align="right"><a href="#top">Back to top</a></p>
 
-Set the 'Project Interpreter' to be the venv interpreter. This should mean that, when you open the project, the correct interpreter is referenced.
-
-If you want the conda-env to be open in the background, when opening PyCharm, commands are (in Anaconda prompt):
-```
-> cd [to home folder of this project]
-> conda activate py369
-> env\Scripts\activate
-> [location of PyCharm.exe] 
-```
-To get the PyCharm location, right click on the PyCharm desktop icon, then right click again -- select ' Properties'. The path to the `.exe` is in the 'Target:' field.
-
-This ensures that the 'Terminal' is in the conda-env *and* venv. 
-
-### Git
-`.gitignore` was already set up when I cloned the repo. It is very similar to the recommended Python gitignore from here: <https://gitignore.io/api/python>.
-
-This is a "monorepo" (i.e. will hold all work on the product, including various packages). In a Python script, you may want to `import` a module that is saved in the root folder of the specific package that you are in. PyCharm will not be able to the find the module unless it knows that the package root folder is indeed a root (otherwise it will think the only root folder is the main project root). To enable this:
-
-- Right click on the package root folder in the Project view.
-- Select `Mark Directory as...` (near bottom of list) `Source Root`.
-
-From <https://stackoverflow.com/a/35553721>.
-
-### Building a package
-The following will create a *source* distribution and a *wheel* distribution out of a Python package that you have written (and which includes a `setup.py`).
-```
-> cd [root of git repo]
-> python packages\regression_model\setup.py sdist bdist_wheel
-```
+## Further ideas
+- Add Swagger UI view for the `ml_api` using flasgger: <https://github.com/flasgger/flasgger>
+- Convert `ml_api` from a Flask API to using [Flask-RESTX](https://github.com/python-restx/flask-restx) or Flask-RESTful. Not much difference, as per <https://stackoverflow.com/a/41783739>.
+- Remove comments from the PyCharm lint tests (e.g. `# noinspection PyShadowingBuiltins`) and run `pylint` tests instead.
