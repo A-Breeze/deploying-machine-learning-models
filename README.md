@@ -212,22 +212,33 @@ This is done on [CircleCI](https://circleci.com/) (for which you need to sign up
     ```
     heroku login   # This is an alias of: heroku auth:login. Enter your details.
     cd [root folder of this project]
-    heroku git: remote -a udemy-ml-api-ab  # The name of the remote will be `heroku` (as opposed to `origin`)
+    heroku git:remote -a udemy-ml-api-ab  # The name of the remote will be `heroku` (as opposed to `origin`)
     ```
+- If I were using GemFury to store my built packages, it requires an API key to get downloads to `pip`. The API key could be added as an environment variable to the app in Heroku by going to **Settings** - **Config Vars**.
 
 #### Deploy
-- Deploy a particular branch to Heroku by pushing it to `master` of the `heroku` remote:
-    ```
-    heroku login
-    git push heroku Sect10_PaaS:master
-    ``` 
-**NOT COMPLETE**
+Deploy a particular branch to Heroku by pushing it to `master` of the `heroku` remote:
+```
+heroku login
+cd [root folder of this project]
+git push heroku Sect10_PaaS:master
+```
+Should return a message to show it has been deployed successfully. You can also look at the **Activity** tab in the Heroku dashboard.
+
+#### See it running
+From the dashboard, click **Open app**. Alternatively, it is here: <https://udemy-ml-api-ab.herokuapp.com/version>.
+
+See the live console logs from the app as it updates:
+```
+heroku logs --tail
+# To stop: Ctrl+C
+```
 
 #### Other commands
 - Docs here: <https://devcenter.heroku.com/articles/heroku-cli-commands>
 - Clone a repo from Heroku (see <https://stackoverflow.com/a/32895401>):
     ```
-    heroku git: clone -a YOUR_APP_NAME
+    heroku git:clone -a YOUR_APP_NAME
     ```
 
 <p align="right"><a href="#top">Back to top</a></p>
