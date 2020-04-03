@@ -22,6 +22,7 @@ For the documentation, visit the [course on Udemy](https://www.udemy.com/deploym
     - [Run the API package](#Run-the-API-package)
     - [Run continuous integration](#Run-continuous-integration)
 1. [Trouble-shooting](#Trouble-shooting)
+1. [Further ideas](#Further-ideas)
 
 <p align="right"><a href="#top">Back to top</a></p>
 
@@ -37,7 +38,7 @@ It *should* be possible to run the code in JupyterLab (or another IDE) from your
 All console commands are run from the root folder of this project unless otherwise stated.
 
 ### Start Binder instance
-[![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/A-Breeze/deploying-machine-learning-models/Sect_09_Diff_Tests?urlpath=lab)
+[![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/A-Breeze/deploying-machine-learning-models/master?urlpath=lab)
 
 ### Package environment
 A conda-env has been created from `envinronment.yml` in Binder is called `notebook` by default. I will use the `venv` that is specified *within* the conda-env.
@@ -183,3 +184,8 @@ There were various problems installing and using `scikit-learn` specifically.
 I spent some time trying to get VSCode to work inside JupyterLab on Binder, using the potential solution from here: <https://github.com/betatim/vscode-binder>. However, I was not successful, so concluded it was sufficient to use JupyterLab only. Also see my attempts here: <https://github.com/A-Breeze/binder_tests>.
 
 <p align="right"><a href="#top">Back to top</a></p>
+
+## Further ideas
+- Add Swagger UI view for the `ml_api` using flasgger: <https://github.com/flasgger/flasgger>
+- Convert `ml_api` from a Flask API to using [Flask-RESTX](https://github.com/python-restx/flask-restx) or Flask-RESTful. Not much difference, as per <https://stackoverflow.com/a/41783739>.
+- Remove comments from the PyCharm lint tests (e.g. `# noinspection PyShadowingBuiltins`) and run `pylint` tests instead.
