@@ -211,6 +211,7 @@ This is done on [CircleCI](https://circleci.com/) (for which you need to sign up
     - Go to the Project settings (`Jobs`, then the little gear wheel by the project name) 
     - `Build settings` - `Environment variables` - `Add variable`
     - We want to add `KAGGLE_USERNAME` and `KAGGLE_KEY`
+- Similarly, to automate the deployment to Heroku, you need to supply `HEROKU_APP_NAME` (= `udemy-ml-api-ab`) and `HEROKU_API_KEY`. (Note: This is *not* in the "Heroku Key" in my personal settings.) See [below](#Deploy-to-Heroku).
 
 ### Deploy to Heroku
 #### Setup
@@ -218,20 +219,37 @@ This is done on [CircleCI](https://circleci.com/) (for which you need to sign up
 - Create a new app. I called mine `udemy-ml-api-ab`. 
 - Add a Heroku remote Git repo to your clone of this repo:
     ```
-    heroku login   # This is an alias of: heroku auth:login. Enter your details.
+    heroku login -i   # This is an alias of: heroku auth:login. Enter your details.
+    heroku whoami   # Shows you've logged in
     cd [root folder of this project]
     heroku git:remote -a udemy-ml-api-ab  # The name of the remote will be `heroku` (as opposed to `origin`)
+    heroku logout   # The command to log out
     ```
 - If I were using GemFury to store my built packages, it requires an API key to get downloads to `pip`. The API key could be added as an environment variable to the app in Heroku by going to **Settings** - **Config Vars**.
 
 #### Deploy
 Deploy a particular branch to Heroku by pushing it to `master` of the `heroku` remote:
 ```
-heroku login
-cd [root folder of this project]
-git push heroku Sect10_PaaS:master
+heroku login -i
+git push heroku master_AB:master
 ```
 Should return a message to show it has been deployed successfully. You can also look at the **Activity** tab in the Heroku dashboard.
+
+Alternatively, instead of logging on to Heroku, we can get an API key to the Heroku Git remote and push it all in one go. This is implemented in the CircleCI tasks (for `master_AB` branch only).
+- To manage Heroku API keys, see: <https://devcenter.heroku.com/articles/heroku-cli-commands#heroku-authorizations>
+    ```
+    # Note that logining-in creates a new API key that lasts until you log out (upto max 1 year)
+    heroku login -i
+    heroku authorizations   # List the keys I have set up. Add "--json" option to see all details.
+    heroku authorizations:info ID   # Details about a specific token
+    # Make a new one and get the details to a file. By default, it has no expiry date.
+    heroku authorizations:create --json -d "Key for CircleCI AB" > tmp.json
+    heroku authorizations:revoke ID   # To stop a token
+    ```
+- Push it in one go without being logged on (substitute `$HEROKU_API_KEY`):
+    ```
+    git push https://heroku:87ac20c4-3aba-4285-a45b-6e9ced9d9e6e@git.heroku.com/udemy-ml-api-ab.git master_AB:master
+    ```
 
 #### See it running
 From the dashboard, click **Open app**. Alternatively, it is here: <https://udemy-ml-api-ab.herokuapp.com/version>.
