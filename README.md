@@ -24,7 +24,7 @@ For the documentation, visit the [course on Udemy](https://www.udemy.com/deploym
     - [Install dependencies: API package](#Install-dependencies-API-package)
     - [Run the API package](#Run-the-API-package)
     - [Run automated tests: API package](#Run-automated-tests-API-package)
-1. [Tasks: CI/CD](#Tasks-CI/CD)
+1. [Tasks: CI/CD](#Tasks-CICD)
     - [Run continuous integration](#Run-continuous-integration)
     - [Deploy to Heroku](#Deploy-to-Heroku)
 1. [Trouble-shooting](#Trouble-shooting)
@@ -162,7 +162,7 @@ We have a choice of server on which to run the API app:
     This is the command specified in the `Procfile` which Heroku uses to start the *dyno* (i.e. to run Python code dynamically on the web server).
 
 #### Running the API from JupyterLab
-The resulting API will be served at: `<notebook-base>/proxy/127.0.0.1:5000`
+The resulting API will be served at: `<notebook-base>/proxy/127.0.0.1:5000` (or, if running with `gunicorn`, the port will be `8000`)
 - That is, remove `/lab` from the URL and replace it with `/proxy/127.0.0.1:5000`.
 - Go to the following endpoints to check it is working:
     - `/health`
@@ -173,6 +173,14 @@ The resulting API will be served at: `<notebook-base>/proxy/127.0.0.1:5000`
     - Also in the config file, we define the message level that will go to the console `console_handler.setLevel()` and to the file `file_handler.setLevel()`. Both of these should be greater than the `logger.setLevel()` within `get_logger()`.
 
 As per: <https://jupyter-server-proxy.readthedocs.io/en/latest/arbitrary-ports-hosts.html>.
+
+Alternatively, you can query the API using `curl` from another console instance, e.g.:
+```
+curl -X GET localhost:8000/health
+curl -X GET localhost:8000/version
+# Use the scripts/input_test.json data to get a response
+curl --header "Content-Type: application/json" --request POST --data "@scripts/input_test.json" localhost:8000/v1/predict/regression
+```
 
 ### Run automated tests: API package
 To run the test for the `ml_api` package, excluding differential tests:
@@ -232,6 +240,13 @@ See the live console logs from the app as it updates:
 ```
 heroku logs --tail
 # To stop: Ctrl+C
+```
+
+#### Test it manually
+The following submits the JSON input data at `scripts/input_test.json` to the deployed API using `curl` (which must be installed):
+```
+curl --request GET https://udemy-ml-api-ab.herokuapp.com/version
+curl --header "Content-Type: application/json" --request POST --data "@scripts/input_test.json" https://udemy-ml-api-ab.herokuapp.com/v1/predict/regression
 ```
 
 #### Other commands
