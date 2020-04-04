@@ -289,7 +289,9 @@ There were various problems installing and using `scikit-learn` specifically.
 I spent some time trying to get VSCode to work inside JupyterLab on Binder, using the potential solution from here: <https://github.com/betatim/vscode-binder>. However, I was not successful, so concluded it was sufficient to use JupyterLab only. Also see my attempts here: <https://github.com/A-Breeze/binder_tests>.
 
 ### Heroku
-Whenever I interact with Heroku CLI, I get a message saying an update (to `6.99.0`) is available. I am ignoring it, as per <https://github.com/heroku/cli/issues/1182#issue-397716857>.
+When I first installed Heroku CLI, for any command entered, I got a message saying an update (to `6.99.0`) is available. I ignored it (as per <https://github.com/heroku/cli/issues/1182#issue-397716857>), and it appears to have gone away after some time.
+
+The free option for Heroku gives 550 dyno hours per month. To check how many have been used and are remaining, see here: <https://help.heroku.com/FRHZA2YG/how-do-i-monitor-my-free-dyno-hours-quota>.
 
 <p align="right"><a href="#top">Back to top</a></p>
 
