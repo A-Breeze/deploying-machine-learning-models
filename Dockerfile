@@ -4,7 +4,7 @@ FROM python:3.6.4
 # Create the user that will run the app named "ml-api-user"
 RUN adduser --disabled-password --gecos '' ml-api-user
 
-WORKDIR /opt/packages/ml_api
+WORKDIR /opt
 
 # ARG PIP_EXTRA_INDEX_URL # AB: I'm not using GemFury, so don't need this command
 ENV FLASK_APP run.py
@@ -27,4 +27,4 @@ USER ml-api-user
 EXPOSE 5000
 
 # Command that will automatically run when we start the container instance
-CMD ["bash", "./run.sh"]
+CMD ["bash", "./packages/ml_api/run.sh"]
