@@ -52,15 +52,15 @@ We create a conda-env to track the version of Python, and then use a `venv` that
 - **Binder**: A conda-env is created from `binder/environment.yml` in Binder is called `notebook` by default. Commands for the Binder Console (in Linux) are:
     ```
     conda activate notebook
-    python -m venv env
-    source env/bin/activate
+    python -m venv venv
+    source venv/bin/activate
     ```
 - **Locally** (on Windows):
     ```
     conda env create -f environment.yml --force
     conda activate deploy_ml_env
-    python -m venv env
-    source env\Scripts\activate
+    python -m venv venv
+    source venv\Scripts\activate
     ```
 
 <p align="right"><a href="#top">Back to top</a></p>
