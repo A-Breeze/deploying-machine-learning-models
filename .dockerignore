@@ -1,0 +1,15 @@
+jupyter_notebooks*
+env/*
+venv/*
+.circleci*
+.idea*
+.vscode*
+binder*
+packages/regression_model/*
+!packages/regression_model/dist/regression_model-*.tar.gz
+*.env
+*.log
+.git
+.gitignore
+environment.yml
+Procfile

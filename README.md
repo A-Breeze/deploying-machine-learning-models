@@ -24,6 +24,7 @@ For the documentation, visit the [course on Udemy](https://www.udemy.com/deploym
     - [Install dependencies: API package](#Install-dependencies-API-package)
     - [Run the API package](#Run-the-API-package)
     - [Run automated tests: API package](#Run-automated-tests-API-package)
+    - [Docker container: API package](#Docker-container-API-package)
 1. [Tasks: CI/CD](#Tasks-CICD)
     - [Run continuous integration](#Run-continuous-integration)
     - [Deploy to Heroku](#Deploy-to-Heroku)
@@ -39,22 +40,28 @@ This document describes how to run the repo using JupyterLab on Binder.
     - Security is *not* guaranteed within Binder (as per [here](https://mybinder.readthedocs.io/en/latest/faq.html#can-i-push-data-from-my-binder-session-back-to-my-repository)), so I'll be pushing Git from another location, which involves some manual copy-paste.
     - The package environment has to be restored each time, which takes some time.
 
-It *should* be possible to run the code in JupyterLab (or another IDE) from your own machine (i.e. not on Binder), but this hasn't been tested. Start the set up from [Package environment](#Package-environment) below.
+It *should* be possible to run the code in JupyterLab (or another IDE) from your own machine (i.e. not on Binder), but this hasn't been tested. Follow the bullet point to install it *Locally on Windows* in [Package environment](#Package-environment) below.
 
-All console commands are run from the root folder of this project unless otherwise stated.
+All console commands are **run from the root folder of this project** unless otherwise stated.
 
 ### Start Binder instance
-[![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/A-Breeze/deploying-machine-learning-models/Sect10_PaaS?urlpath=lab)
+[![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/A-Breeze/deploying-machine-learning-models/Sect11_Docker?urlpath=lab)
 
 ### Package environment
-A conda-env has been created from `envinronment.yml` in Binder is called `notebook` by default. I will use the `venv` that is specified *within* the conda-env.
-
-Commands for the Binder Console (in Linux) are:
-```
-conda activate notebook  # Or `py369` if not on Binder
-python -m venv env   # Create new venv called "env"
-source env/bin/activate   # Activate env (or `env\Scripts\activate` on Windows)
-```
+We create a conda-env to track the version of Python, and then use a `venv` that is specified *within* the conda-env.
+- **Binder**: A conda-env is created from `binder/environment.yml` in Binder is called `notebook` by default. Commands for the Binder Console (in Linux) are:
+    ```
+    conda activate notebook
+    python -m venv venv
+    source venv/bin/activate
+    ```
+- **Locally** (on Windows):
+    ```
+    conda env create -f environment.yml --force
+    conda activate deploy_ml_env
+    python -m venv venv
+    source venv\Scripts\activate
+    ```
 
 <p align="right"><a href="#top">Back to top</a></p>
 
@@ -78,6 +85,7 @@ source env/bin/activate   # Activate env (or `env\Scripts\activate` on Windows)
     - `publish_model.sh`: Push the model package to an online repo. \[I decided not to do this, to avoid signing up to another service.\]
 - `.circleci` **Section 8**: Configure tasks to be run in Continuous Integration pipeline.
 - `Procfile` **Section 10**: Configuration for the Heroku deployment.
+- `Dockerfile` and `Makefile` **Section 11**: Docker image specifications.
 - `.idea/runConfigurations`: I previously set this up to automate the running of common tasks in PyCharm. I'm no longer using PyCharm, so these are not maintained (but may still work).
 
 ### Other materials
@@ -201,6 +209,28 @@ pip install -r packages/ml_api/requirements.txt
 pytest packages/ml_api/tests -m differential
 ```
 
+### Docker container: API package
+Instead of installing Python and dependencies, we can specify the environment from OS (Operating System) upwards using a Docker container. 
+
+Useful commands are:
+```
+docker build -t ml_api:latest .   # Build the image from the root Dockerfile and call it `ml_api:latest`
+    # If we needed to include environment variables, we'd use the option `--build-arg MY_ENV_VAR=%MY_ENV_VAR%`
+docker run --name ml_api -d -p 8000:5000 --rm ml_api:latest   # Start a container from the image
+docker ps   # Check it is running, and get the container ID
+docker logs CONTAINER_ID --tail   # View the container's logs (given the ID from above)
+```
+
+I have not run this locally, and Docker cannot be run from within Binder. You can get a Dockerfile produced by `repo2docker` that was used to start the Binder instance, although the docs say 
+> This Dockerfile output is for debugging purposes of repo2docker only - it can not be used by docker directly.
+
+<https://repo2docker.readthedocs.io/en/latest/usage.html#debugging-repo2docker-with-debug-and-no-build>
+
+```
+pip install jupyter-repo2docker
+jupyter-repo2docker --no-build --debug . >  Dockerfile
+```
+
 <p align="right"><a href="#top">Back to top</a></p>
 
 ## Tasks: CI/CD
@@ -211,7 +241,7 @@ This is done on [CircleCI](https://circleci.com/) (for which you need to sign up
     - Go to the Project settings (`Jobs`, then the little gear wheel by the project name) 
     - `Build settings` - `Environment variables` - `Add variable`
     - We want to add `KAGGLE_USERNAME` and `KAGGLE_KEY`
-- Similarly, to automate the deployment to Heroku, you need to supply `HEROKU_APP_NAME` (= `udemy-ml-api-ab`) and `HEROKU_API_KEY`. (Note: This is *not* in the "Heroku Key" in my personal settings.) See [below](#Deploy-to-Heroku).
+- Similarly, to automate the deployment to Heroku, you need to supply `HEROKU_APP_NAME` (= `udemy-ml-api-ab`), `HEROKU_API_KEY` and (if you want to deploy by Docker container) `HEROKU_EMAIL`. (Note: This is *not* in the "Heroku Key" in my personal settings.) See [below](#Deploy-to-Heroku).
 
 ### Deploy to Heroku
 #### Setup
@@ -228,6 +258,7 @@ This is done on [CircleCI](https://circleci.com/) (for which you need to sign up
 - If I were using GemFury to store my built packages, it requires an API key to get downloads to `pip`. The API key could be added as an environment variable to the app in Heroku by going to **Settings** - **Config Vars**.
 
 #### Deploy
+##### Manually
 Deploy a particular branch to Heroku by pushing it to `master` of the `heroku` remote:
 ```
 heroku login -i
@@ -235,7 +266,8 @@ git push heroku master_AB:master
 ```
 Should return a message to show it has been deployed successfully. You can also look at the **Activity** tab in the Heroku dashboard.
 
-Alternatively, instead of logging on to Heroku, we can get an API key to the Heroku Git remote and push it all in one go. This is implemented in the CircleCI tasks (for `master_AB` branch only).
+##### Push to Heroku remote
+Alternatively, instead of logging on to Heroku, we can get an API key to the Heroku Git remote and push it all in one go. This is implemented in the CircleCI task `section_10_deploy_to_heroku` (for `master_AB` branch only).
 - To manage Heroku API keys, see: <https://devcenter.heroku.com/articles/heroku-cli-commands#heroku-authorizations>
     ```
     # Note that logining-in creates a new API key that lasts until you log out (upto max 1 year)
@@ -250,6 +282,11 @@ Alternatively, instead of logging on to Heroku, we can get an API key to the Her
     ```
     git push https://heroku:87ac20c4-3aba-4285-a45b-6e9ced9d9e6e@git.heroku.com/udemy-ml-api-ab.git master_AB:master
     ```
+
+##### Build Docker image then push
+This is implemented in the CircleCI task `section_11_build_and_push_to_heroku_docker` (for `master_AB` branch only). See the comments in `.circleci/config` and `Makefile`. Docs are here:
+- Heroku Docker container registry - push and release: <https://devcenter.heroku.com/articles/container-registry-and-runtime#pushing-an-existing-image>
+- Using a CI/CD platform to automate it: <https://devcenter.heroku.com/articles/container-registry-and-runtime#using-a-ci-cd-platform>
 
 #### See it running
 From the dashboard, click **Open app**. Alternatively, it is here: <https://udemy-ml-api-ab.herokuapp.com/version>.
@@ -285,13 +322,39 @@ There were various problems installing and using `scikit-learn` specifically.
     - Inspired by: <https://stackoverflow.com/a/56857828>...
     - ...which links to: <https://stackoverflow.com/a/1880453>
 
+A common problem when updating a conda-env is described here: <https://github.com/conda/conda/issues/7279#issuecomment-389359679>.
+
 ### Binder
 I spent some time trying to get VSCode to work inside JupyterLab on Binder, using the potential solution from here: <https://github.com/betatim/vscode-binder>. However, I was not successful, so concluded it was sufficient to use JupyterLab only. Also see my attempts here: <https://github.com/A-Breeze/binder_tests>.
 
 ### Heroku
+#### Heroku CLI version
 When I first installed Heroku CLI, for any command entered, I got a message saying an update (to `6.99.0`) is available. I ignored it (as per <https://github.com/heroku/cli/issues/1182#issue-397716857>), and it appears to have gone away after some time.
 
+#### Dyno hours on free account
 The free option for Heroku gives 550 dyno hours per month. To check how many have been used and are remaining, see here: <https://help.heroku.com/FRHZA2YG/how-do-i-monitor-my-free-dyno-hours-quota>.
+
+#### Platform API
+To use the Heroku Platform API from Windows, we need to:
+- Set up the session:
+    ```
+    heroku login -i
+    # The above creates a file `_netrc` in %USERPROFILE%... 
+    # ...but the below needs to use `_netrc` and assumes it is in %HOME%, so...
+    set HOME=%USERPROFILE%   # Sets an environment variable only for the duration of the session
+    set   # You can see it listed here
+    ```
+- We can use `curl -n` (aka `curl --netrc`) to send requests to the API, e.g.:
+    ```
+    # List the apps
+    curl -i -n -X GET https://api.heroku.com/apps -H "Accept: application/vnd.heroku+json; version=3"
+    # Get the "formation" details of the app
+    curl -n https://api.heroku.com/apps/udemy-ml-api-ab/formation -H "Accept: application/vnd.heroku+json; version=3"
+    ```
+
+See:
+- API reference: <https://devcenter.heroku.com/articles/platform-api-reference>
+- The reason I wanted to investigate this: <https://devcenter.heroku.com/articles/container-registry-and-runtime#api>. After some attempts (see commit `4fbad6`), I decided this didn't work and reverted to the fix suggested in the lecture notes (i.e. do not tag the docker image and always deploy the `latest` image).
 
 <p align="right"><a href="#top">Back to top</a></p>
 
@@ -302,3 +365,8 @@ The free option for Heroku gives 550 dyno hours per month. To check how many hav
 - Ensure the `jupyter_notebooks` can be run.
     - Incorporate other research code that is currently sitting in a previous repo, not in this monorepo.
 - Make this an independent repo, not a fork of the train repo.
+- Align the version of Python between CircleCI config, Dockerfile, and Binder (and local) development `environment.yml`.
+- Try out different hosted development, CI and CD options, e.g.:
+    - *Git Actions* instead of CircleCI
+    - *Azure DevOps* instead of GitHub and CircleCI
+    - *Azure App Service* with *Web Apps for Containers* instead of Heroku
