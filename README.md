@@ -85,7 +85,9 @@ We create a conda-env to track the version of Python, and then use a `venv` that
     - `publish_model.sh`: Push the model package to an online repo. \[I decided not to do this, to avoid signing up to another service.\]
 - `.circleci` **Section 8**: Configure tasks to be run in Continuous Integration pipeline.
 - `Procfile` **Section 10**: Configuration for the Heroku deployment.
-- `Dockerfile` and `Makefile` **Section 11**: Docker image specifications.
+- `Dockerfile` and `Makefile`: Docker image specifications used for:
+    - **Section 11**: Deployment to Heroku
+    - **Section 12**: Deployment to AWS. *Note*: I did not replicate this section, so the commands are not amended to work. just included for the record.
 - `.idea/runConfigurations`: I previously set this up to automate the running of common tasks in PyCharm. I'm no longer using PyCharm, so these are not maintained (but may still work).
 
 ### Other materials
@@ -365,8 +367,14 @@ See:
 - Ensure the `jupyter_notebooks` can be run.
     - Incorporate other research code that is currently sitting in a previous repo, not in this monorepo.
 - Make this an independent repo, not a fork of the train repo.
+- Look back at the course - there are some additional lessons in the 2020 update, including intro to *Tox* (Section 5.9). Complete these lessons.
 - Align the version of Python between CircleCI config, Dockerfile, and Binder (and local) development `environment.yml`.
 - Try out different hosted development, CI and CD options, e.g.:
     - *Git Actions* instead of CircleCI
-    - *Azure DevOps* instead of GitHub and CircleCI
+    - *Azure DevOps* instead of GitHub. Looks like you can use GitHub credentials to access Azure DevOps.
+    - *Azure Test Plans* and *Pipelines* instead of CircleCI, e.g.: <https://docs.microsoft.com/en-us/azure/devops/pipelines/artifacts/pypi>
+    - *Azure Artifacts* instead of GemFury for a (private) Python package registry, e.g.: <https://docs.microsoft.com/en-us/azure/devops/artifacts/quickstarts/python-packages?view=azure-devops>
     - *Azure App Service* with *Web Apps for Containers* instead of Heroku
+- Try using an online environment to run the Docker commands that I cannot run locally, e.g.: 
+    - The Docker website provides a playground <https://labs.play-with-docker.com/> (requires login)
+    - Katacoda <https://www.katacoda.com/>.
