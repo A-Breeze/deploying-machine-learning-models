@@ -328,9 +328,33 @@ A common problem when updating a conda-env is described here: <https://github.co
 I spent some time trying to get VSCode to work inside JupyterLab on Binder, using the potential solution from here: <https://github.com/betatim/vscode-binder>. However, I was not successful, so concluded it was sufficient to use JupyterLab only. Also see my attempts here: <https://github.com/A-Breeze/binder_tests>.
 
 ### Heroku
+#### Heroku CLI version
 When I first installed Heroku CLI, for any command entered, I got a message saying an update (to `6.99.0`) is available. I ignored it (as per <https://github.com/heroku/cli/issues/1182#issue-397716857>), and it appears to have gone away after some time.
 
+#### Dyno hours on free account
 The free option for Heroku gives 550 dyno hours per month. To check how many have been used and are remaining, see here: <https://help.heroku.com/FRHZA2YG/how-do-i-monitor-my-free-dyno-hours-quota>.
+
+#### Platform API
+To use the Heroku Platform API from Windows, we need to:
+- Set up the session:
+    ```
+    heroku login -i
+    # The above creates a file `_netrc` in %USERPROFILE%... 
+    # ...but the below needs to use `_netrc` and assumes it is in %HOME%, so...
+    set HOME=%USERPROFILE%   # Sets an environment variable only for the duration of the session
+    set   # You can see it listed here
+    ```
+- We can use `curl -n` (aka `curl --netrc`) to send requests to the API, e.g.:
+    ```
+    # List the apps
+    curl -i -n -X GET https://api.heroku.com/apps -H "Accept: application/vnd.heroku+json; version=3"
+    # Get the "formation" details of the app
+    curl -n https://api.heroku.com/apps/udemy-ml-api-ab/formation -H "Accept: application/vnd.heroku+json; version=3"
+    ```
+
+See:
+- API reference: <https://devcenter.heroku.com/articles/platform-api-reference>
+- The reason I wanted to investigate this: <https://devcenter.heroku.com/articles/container-registry-and-runtime#api>.
 
 <p align="right"><a href="#top">Back to top</a></p>
 
