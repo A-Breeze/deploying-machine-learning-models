@@ -2,6 +2,8 @@ jupyter_notebooks*
 */env*
 */venv*
 .circleci*
+.idea*
+.vscode*
 packages/regression_model
 *.env
 *.log

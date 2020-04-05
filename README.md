@@ -24,6 +24,7 @@ For the documentation, visit the [course on Udemy](https://www.udemy.com/deploym
     - [Install dependencies: API package](#Install-dependencies-API-package)
     - [Run the API package](#Run-the-API-package)
     - [Run automated tests: API package](#Run-automated-tests-API-package)
+    - [Docker container: API package](#Docker-container-API-package)
 1. [Tasks: CI/CD](#Tasks-CICD)
     - [Run continuous integration](#Run-continuous-integration)
     - [Deploy to Heroku](#Deploy-to-Heroku)
@@ -39,22 +40,28 @@ This document describes how to run the repo using JupyterLab on Binder.
     - Security is *not* guaranteed within Binder (as per [here](https://mybinder.readthedocs.io/en/latest/faq.html#can-i-push-data-from-my-binder-session-back-to-my-repository)), so I'll be pushing Git from another location, which involves some manual copy-paste.
     - The package environment has to be restored each time, which takes some time.
 
-It *should* be possible to run the code in JupyterLab (or another IDE) from your own machine (i.e. not on Binder), but this hasn't been tested. Start the set up from [Package environment](#Package-environment) below.
+It *should* be possible to run the code in JupyterLab (or another IDE) from your own machine (i.e. not on Binder), but this hasn't been tested. Follow the bullet point to install it *Locally on Windows* in [Package environment](#Package-environment) below.
 
-All console commands are run from the root folder of this project unless otherwise stated.
+All console commands are **run from the root folder of this project** unless otherwise stated.
 
 ### Start Binder instance
 [![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/A-Breeze/deploying-machine-learning-models/Sect11_Docker?urlpath=lab)
 
 ### Package environment
-A conda-env has been created from `envinronment.yml` in Binder is called `notebook` by default. I will use the `venv` that is specified *within* the conda-env.
-
-Commands for the Binder Console (in Linux) are:
-```
-conda activate notebook  # Or `py369` if not on Binder
-python -m venv env   # Create new venv called "env"
-source env/bin/activate   # Activate env (or `env\Scripts\activate` on Windows)
-```
+We create a conda-env to track the version of Python, and then use a `venv` that is specified *within* the conda-env.
+- **Binder**: A conda-env is created from `binder/environment.yml` in Binder is called `notebook` by default. Commands for the Binder Console (in Linux) are:
+    ```
+    conda activate notebook
+    python -m venv env
+    source env/bin/activate
+    ```
+- **Locally** (on Windows):
+    ```
+    conda env create -f environment.yml --force
+    conda activate deploy_ml_env
+    python -m venv env
+    source env\Scripts\activate
+    ```
 
 <p align="right"><a href="#top">Back to top</a></p>
 
@@ -78,6 +85,7 @@ source env/bin/activate   # Activate env (or `env\Scripts\activate` on Windows)
     - `publish_model.sh`: Push the model package to an online repo. \[I decided not to do this, to avoid signing up to another service.\]
 - `.circleci` **Section 8**: Configure tasks to be run in Continuous Integration pipeline.
 - `Procfile` **Section 10**: Configuration for the Heroku deployment.
+- `Dockerfile` **Section 11**: Docker image specifications.
 - `.idea/runConfigurations`: I previously set this up to automate the running of common tasks in PyCharm. I'm no longer using PyCharm, so these are not maintained (but may still work).
 
 ### Other materials
@@ -201,6 +209,28 @@ pip install -r packages/ml_api/requirements.txt
 pytest packages/ml_api/tests -m differential
 ```
 
+### Docker container: API package
+Instead of installing Python and dependencies, we can specify the environment from OS (Operating System) upwards using a Docker container. 
+
+Useful commands are:
+- Build command is:
+```
+docker build -t ml_api:latest .   # Build the image
+docker run --name ml_api -d -p 8000:5000 --rm ml_api:latest   # Start a container
+docker ps   # Check it is running, and get the container ID
+docker logs CONTAINER_ID --tail   # View the container's logs (given the ID from above)
+```
+
+I have not run this locally, and Docker cannot be run from within Binder. You can get a Dockerfile produced by `repo2docker` that was used to start the Binder instance, although the docs say 
+> This Dockerfile output is for debugging purposes of repo2docker only - it can not be used by docker directly.
+
+<https://repo2docker.readthedocs.io/en/latest/usage.html#debugging-repo2docker-with-debug-and-no-build>
+
+```
+pip install jupyter-repo2docker
+jupyter-repo2docker --no-build --debug . >  Dockerfile
+```
+
 <p align="right"><a href="#top">Back to top</a></p>
 
 ## Tasks: CI/CD
@@ -284,6 +314,8 @@ There were various problems installing and using `scikit-learn` specifically.
 - After various experiments, it seems that there is a limit (on my Windows machine) on the length of the path, and `scikit-learn` (or one of its dependencies) was exceeding this limit, whereas the other packages were not.  
     - Inspired by: <https://stackoverflow.com/a/56857828>...
     - ...which links to: <https://stackoverflow.com/a/1880453>
+
+A common problem when updating a conda-env is described here: <https://github.com/conda/conda/issues/7279#issuecomment-389359679>.
 
 ### Binder
 I spent some time trying to get VSCode to work inside JupyterLab on Binder, using the potential solution from here: <https://github.com/betatim/vscode-binder>. However, I was not successful, so concluded it was sufficient to use JupyterLab only. Also see my attempts here: <https://github.com/A-Breeze/binder_tests>.
