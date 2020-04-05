@@ -133,7 +133,10 @@ jobs:
       # See: <https://circleci.com/docs/2.0/building-docker-images/>
       - setup_remote_docker
       # 'registry.heroku.com' is a store of Docker images, as opposed to DockerHub
-      - run: docker login --username=$HEROKU_EMAIL --password=$HEROKU_API_KEY registry.heroku.com
+      - run: 
+          name: Login to docker registry
+          command: | 
+            docker login --username=$HEROKU_EMAIL --password=$HEROKU_API_KEY registry.heroku.com
       - run:
           # Need to install Heroku CLI, so that we can run "heroku container:release" below
           name: Setup Heroku CLI

@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+
 # Set the following environment variable
 export IS_DEBUG=${DEBUG:-false}
 # The syntax "${parameter:-word}" means: 
