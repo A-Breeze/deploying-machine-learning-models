@@ -354,7 +354,7 @@ To use the Heroku Platform API from Windows, we need to:
 
 See:
 - API reference: <https://devcenter.heroku.com/articles/platform-api-reference>
-- The reason I wanted to investigate this: <https://devcenter.heroku.com/articles/container-registry-and-runtime#api>.
+- The reason I wanted to investigate this: <https://devcenter.heroku.com/articles/container-registry-and-runtime#api>. After some attempts (see commit `4fbad6`), I decided this didn't work and reverted to the fix suggested in the lecture notes (i.e. do not tag the docker image and always deploy the `latest` image).
 
 <p align="right"><a href="#top">Back to top</a></p>
 
