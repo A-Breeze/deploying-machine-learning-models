@@ -181,4 +181,4 @@ workflows:
           filters:
             branches:
               only:
-                - master_AB
+                - test_docker
