@@ -334,3 +334,4 @@ The free option for Heroku gives 550 dyno hours per month. To check how many hav
 - Ensure the `jupyter_notebooks` can be run.
     - Incorporate other research code that is currently sitting in a previous repo, not in this monorepo.
 - Make this an independent repo, not a fork of the train repo.
+- Align the version of Python between CircleCI config, Dockerfile, and Binder (and local) development `environment.yml`.
