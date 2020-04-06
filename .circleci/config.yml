@@ -167,6 +167,37 @@ jobs:
             make build-ml-api-aws tag-ml-api push-ml-api-aws
             aws ecs update-service --cluster ml-api-cluster --service custom-service --task-definition  first-run-task-definition --force-new-deployment
 
+  section_13_train_and_upload_neural_network_model:
+    docker:
+      - image: circleci/python:3.6.4-stretch
+    working_directory: ~/project
+    steps:
+      - checkout
+      - *prepare_venv
+      - run: 
+          name: Install requirements
+          command: |
+            . venv/bin/activate
+            pip install -r packages/neural_network_model/requirements.txt
+      - run:
+          name: Fetch Training data - 2GB
+          command: |
+            . venv/bin/activate
+            chmod +x ./scripts/fetch_kaggle_large_dataset.sh
+            ./scripts/fetch_kaggle_large_dataset.sh
+      - run: 
+          name: Train model
+          command: |
+            . venv/bin/activate
+            PYTHONPATH=./packages/neural_network_model python3 packages/neural_network_model/neural_network_model/train_pipeline.py
+      - run: 
+          name: Publish model to Gemfury
+          command: |
+            . venv/bin/activate
+            # AB note: Section 8.4 recommends using GemFury, but I decided not to. The following line is therefore commented out
+            # chmod +x ./scripts/publish_model.sh
+            # ./scripts/publish_model.sh ./packages/neural_network_model/
+
 workflows:
   version: 2
   test-all:
@@ -207,3 +238,12 @@ workflows:
       #       branches:
       #         only:
       #           - do_not_want_this_to_run_ever
+      - section_13_train_and_upload_neural_network_model:
+          requires:
+            - test_ml_api
+            - section_9_differential_tests
+          filters:
+            branches:
+              only:
+                # TODO: Change the below, once I am ready to run this task in CI
+                - do_not_run_yet
