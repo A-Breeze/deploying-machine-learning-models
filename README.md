@@ -45,7 +45,7 @@ It *should* be possible to run the code in JupyterLab (or another IDE) from your
 All console commands are **run from the root folder of this project** unless otherwise stated.
 
 ### Start Binder instance
-[![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/A-Breeze/deploying-machine-learning-models/Sect11_Docker?urlpath=lab)
+[![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/A-Breeze/deploying-machine-learning-models/Sect13_NN_model?urlpath=lab)
 
 ### Package environment
 We create a conda-env to track the version of Python, and then use a `venv` that is specified *within* the conda-env.
@@ -67,17 +67,21 @@ We create a conda-env to track the version of Python, and then use a `venv` that
 
 ## Structure of the repo and course
 *Note*: The structure of the repo changes as we work through the course, so the description here may not be entirely up to date. Section numbers refer to the Udemy course. 
-- `jupyter_notebooks/.` **Section 2**: Notebooks that were originally used to analyse the data and build the model, i.e. the *research environment*. Since then, the main code has been converted to the `regression_model` package (see below), so these are no longer part of the (automated) modelling pipeline. They are kept in the repo as an example of how the inspiration would be kept close to the deployment code (i.e. a *mono-repo*). To run the notebooks, you need to:
-    1. Get the data for modelling, as [above](#Get-data-for-modelling)
+- `jupyter_notebooks/.` **Section 2** and **Section 13**: Notebooks that were originally used to analyse the data and build the model, i.e. the *research environment*. Since then, the main code has been converted to the `regression_model` package (see below), so these are no longer part of the (automated) modelling pipeline. They are kept in the repo as an example of how the inspiration would be kept close to the deployment code (i.e. a *mono-repo*). To run the notebooks, you need to:
+    1. Get the data for modelling, as [below](#Get-data-for-modelling)
     1. Install the dependencies for the research environment:
         ```
         pip install -r jupyter_notebooks/requirements.txt
         ```
     
-    **Note**: The notebook code does **not** currently run properly. Ideally, this would be fixed.
+    Other notes: 
+    - The notebook code does **not** currently run properly. Ideally, this would be fixed.
+    - The notebook for research of the `neural_network_model` was run in a Kaggle kernel *not* within Binder. The Kaggle kernel (that is kept in sync *manually* with the copy of the notebook in this repo) is here: <https://www.kaggle.com/btw78jt/deploy-ml-course-cnn>
+    
 - **Section 3**: Considerations for the architecture of the package.
 - `packages/`:
     - `regression_model`  **Section 4 and 6**: A reproducible pipeline to build the model from source data, including pre-processing.
+    - `neural_network_model` **Section 13**: The dataset for this model is large (2GB), so I don't want to load it into Binder (as per: <https://github.com/binder-examples/getting-data#large-public-files>). Therefore, I have created a Kaggle Kernel and uploaded this repo as a "dataset" for the kernel. The commands to train and build the package are recorded on Kaggle and also copied here: **TODO**: Save Kaggle script into GitHub repo.
     - `ml_api` **Section 7**: Serve the model as a Flask API to be consumed.
         - `tests/differential_tests/` **Section 9**
 - `scripts/`
