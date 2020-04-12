@@ -86,6 +86,7 @@ We create a conda-env to track the version of Python, and then use a `venv` that
         - `tests/differential_tests/` **Section 9**
 - `scripts/`
     - `fetch_kaggle_dataset.sh`: Automatically get the data (in this case, from an online Kaggle API).
+    - `fetch_kaggle_large_dataset.sh`: Same but for the `neural_network_model`. \[I am not running this - build the package on Kaggle.\]
     - `publish_model.sh`: Push the model package to an online repo. \[I decided not to do this, to avoid signing up to another service.\]
 - `.circleci` **Section 8**: Configure tasks to be run in Continuous Integration pipeline.
 - `Procfile` **Section 10**: Configuration for the Heroku deployment.
@@ -107,6 +108,8 @@ You'll generally want to carry out the tasks in the order given in this document
 ### Install dependencies: Model package
 ```
 pip install -r packages/regression_model/requirements.txt
+# OR
+pip install -r packages/neural_network_model/requirements.txt
 ```
 
 ### Get data for modelling
@@ -130,6 +133,8 @@ Data is required for fitting the model in the `regression_model` package. It is 
 Install the requirements, then run the script to train the pipeline.
 ```
 PYTHONPATH=./packages/regression_model python packages/regression_model/regression_model/train_pipeline.py
+# OR
+PYTHONPATH=./packages/neural_network_model python packages/neural_network_model/neural_network_model/train_pipeline.py
 ```
 Logs are printed to console, and the model object is added in  `PACKAGE_ROOT / 'trained_models'` as per `packages/regression_model/regression_model/config/config.py`.
 

@@ -8,7 +8,10 @@ PWD = os.path.dirname(os.path.abspath(__file__))
 PACKAGE_ROOT = os.path.abspath(os.path.join(PWD, '..'))
 DATASET_DIR = os.path.join(PACKAGE_ROOT, 'datasets')
 TRAINED_MODEL_DIR = os.path.join(PACKAGE_ROOT, 'trained_models')
-DATA_FOLDER = os.path.join(DATASET_DIR, 'v2-plant-seedlings-dataset')
+# Allows you to specify a different folder for the source data
+# Useful for training the model on Kaggle
+DATA_FOLDER = os.environ.get('DATA_FOLDER', os.path.join(DATASET_DIR, 'test_data'))
+# Changed from: os.path.join(DATASET_DIR, 'v2-plant-seedlings-dataset')
 
 # MODEL PERSISTING
 MODEL_NAME = 'cnn_model'
@@ -19,7 +22,7 @@ ENCODER_NAME = 'encoder'
 # MODEL FITTING
 IMAGE_SIZE = 150  # 50 for testing, 150 for final model
 BATCH_SIZE = 10
-EPOCHS = int(os.environ.get('EPOCHS', 1))  # 1 for testing, 10 for final model
+EPOCHS = 1  # 1 for testing, 8 for final model
 
 
 with open(os.path.join(PACKAGE_ROOT, 'VERSION')) as version_file:

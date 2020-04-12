@@ -42,20 +42,22 @@ def cnn_model(kernel_size=(3, 3),
     model.add(Dropout(dropout_dense))
     model.add(Dense(12, activation="softmax"))
 
-    model.compile(Adam(lr=0.0001),
-                  loss='binary_crossentropy',
-                  metrics=['accuracy'])
+    model.compile(
+        Adam(lr=0.0001),
+        loss=losses.categorical_crossentropy,
+        metrics=[metrics.categorical_accuracy]
+    )
 
     return model
 
 
 checkpoint = ModelCheckpoint(config.MODEL_PATH,
-                             monitor='acc',
+                             monitor='categorical_accuracy',
                              verbose=1,
                              save_best_only=True,
                              mode='max')
 
-reduce_lr = ReduceLROnPlateau(monitor='acc',
+reduce_lr = ReduceLROnPlateau(monitor='categorical_accuracy',
                               factor=0.5,
                               patience=2,
                               verbose=1,
