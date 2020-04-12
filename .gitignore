@@ -7,6 +7,7 @@
 .config/
 .ipython/
 .jupyter/
+.keras/
 .local/
 .npm/
 .profile

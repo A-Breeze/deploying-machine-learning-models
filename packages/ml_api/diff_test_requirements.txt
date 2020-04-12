@@ -3,3 +3,5 @@
 
 # ...plus *previous* model version that is committed in the repo
 ./packages/regression_model/dist/regression_model-0.2.0.tar.gz
+
+# There are currently no differential tests for the neural_network_model

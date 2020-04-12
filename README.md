@@ -111,6 +111,7 @@ pip install -r packages/regression_model/requirements.txt
 # OR
 pip install -r packages/neural_network_model/requirements.txt
 ```
+For some reason, on Binder, I could install the pip `neural_network_model` into the *conda-env* `notebook`, but *not* into the `venv` (Error message: `Could not find a version that satisfies the requirement tensorflow==2.1.0`). I was only testing anyway, so I did not pursue an explanation. 
 
 ### Get data for modelling
 Data is required for fitting the model in the `regression_model` package. It is downloaded from Kaggle using the Kaggle CLI. For this we need an API key as per <https://www.kaggle.com/docs/api>.
@@ -134,9 +135,10 @@ Install the requirements, then run the script to train the pipeline.
 ```
 PYTHONPATH=./packages/regression_model python packages/regression_model/regression_model/train_pipeline.py
 # OR
+EPOCHS=1  # Default is 1 for testing the code. Use 8 for fitting the model
 PYTHONPATH=./packages/neural_network_model python packages/neural_network_model/neural_network_model/train_pipeline.py
 ```
-Logs are printed to console, and the model object is added in  `PACKAGE_ROOT / 'trained_models'` as per `packages/regression_model/regression_model/config/config.py`.
+Logs are printed to console, and the model object is added in  `PACKAGE_ROOT / 'trained_models'` as per `packages/[...]_model/[...]_model/config/config.py`. For the `neural_network_model`, you can 
 
 ### Build the model package
 The following will create a *source* distribution and a *wheel* distribution out of a Python package that you have written (and which includes a `setup.py`), and puts the resulting files in `build/` and `dist/` folders.

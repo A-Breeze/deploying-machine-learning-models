@@ -4,6 +4,8 @@ from keras.layers import Dense, Dropout, Conv2D, MaxPooling2D, Flatten
 from keras.optimizers import Adam
 from keras.callbacks import ReduceLROnPlateau, ModelCheckpoint
 from keras.wrappers.scikit_learn import KerasClassifier
+from keras.losses import categorical_crossentropy
+from keras.metrics import categorical_accuracy
 
 from neural_network_model.config import config
 
@@ -15,7 +17,7 @@ def cnn_model(kernel_size=(3, 3),
               third_filters=128,
               dropout_conv=0.3,
               dropout_dense=0.3,
-              image_size=50):
+              image_size=config.IMAGE_SIZE):
 
     model = Sequential()
     model.add(Conv2D(
@@ -40,12 +42,12 @@ def cnn_model(kernel_size=(3, 3),
     model.add(Flatten())
     model.add(Dense(256, activation="relu"))
     model.add(Dropout(dropout_dense))
-    model.add(Dense(12, activation="softmax"))
+    model.add(Dense(config.NUM_OF_CLASSES, activation="softmax"))
 
     model.compile(
         Adam(lr=0.0001),
-        loss=losses.categorical_crossentropy,
-        metrics=[metrics.categorical_accuracy]
+        loss=categorical_crossentropy,
+        metrics=[categorical_accuracy]
     )
 
     return model

@@ -61,7 +61,7 @@ def get_train_test_target(df: pd.DataFrame):
 
     X_train, X_test, y_train, y_test = train_test_split(df['image'],
                                                         df['target'],
-                                                        test_size=0.20,
+                                                        test_size=config.PROP_OF_DATA_TEST,
                                                         random_state=101)
 
     X_train.reset_index(drop=True, inplace=True)
