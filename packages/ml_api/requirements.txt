@@ -3,4 +3,4 @@
 
 # ...plus *current* model version that is committed in the repo
 ./packages/regression_model/dist/regression_model-1.0.0.tar.gz
-./packages/neural_network_model/dist/neural_network_model-0.1.0.tar.gz
+./packages/neural_network_model/dist/neural_network_model-0.0.1.tar.gz

@@ -54,6 +54,7 @@ We create a conda-env to track the version of Python, and then use a `venv` that
     conda activate notebook
     python -m venv venv
     source venv/bin/activate
+    pip install --upgrade pip  # Necessary to have pip>=19.0.* for tensorflow
     ```
 - **Locally** (on Windows):
     ```
@@ -61,6 +62,7 @@ We create a conda-env to track the version of Python, and then use a `venv` that
     conda activate deploy_ml_env
     python -m venv venv
     source venv\Scripts\activate
+    pip install --upgrade pip
     ```
 
 <p align="right"><a href="#top">Back to top</a></p>

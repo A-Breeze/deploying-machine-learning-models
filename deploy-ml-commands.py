@@ -85,6 +85,11 @@ print(
 )
 # Want to store the package distribution on Kaggle, 
 # so it doesn't have to be saved within the repo.
-# TODO: Move ./packages/neural_network_model/dist/neural_network_model-0.1.0.tar.gz to the top level
-# TODO: Delete rest of output
+print("Move the source distribution of the package to the top level")
+src_dist_filename = f'neural_network_model-{vers_str}.tar.gz'
+(target_location / 'dist' / src_dist_filename).rename(Path('.') / src_dist_filename)
 
+print("Delete the remainder of the copied files")
+shutil.rmtree(target_location.parent)
+
+print("\n==== Script completed. =====")
