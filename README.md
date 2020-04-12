@@ -130,6 +130,11 @@ Data is required for fitting the model in the `regression_model` package. It is 
     chmod +x scripts/fetch_kaggle_dataset.sh
     scripts/fetch_kaggle_dataset.sh
     ```
+- Also get the `neural_network_model` package distribution from the Kaggle kernel output where it is built:
+    ```
+    chmod +x scripts/fetch_kaggle_nn_package.sh
+    scripts/fetch_kaggle_nn_package.sh
+    ```
 - **REMEMBER** to `Expire API Token` on Kaggle (or delete the `kaggle.json` from Binder) after running (because Binder cannot be guaranteed to be secure).
 
 ### Train the regression pipeline
