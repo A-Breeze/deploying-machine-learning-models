@@ -29,9 +29,9 @@ EPOCHS = int(os.environ.get('EPOCHS', 1))  # 1 for testing, 8 for final model
 # Normally, the following variable would be 12. However, when the training data
 # set does not contain at least one of each of the 12 plant types we need to 
 # change the number here. This is only for testing purposes.
-NUM_OF_CLASSES = len(
-    [y for y in [x.name for x in Path(DATA_FOLDER).iterdir() if x.is_dir()] if y[0] != "."]
-)
+NUM_OF_CLASSES = len({
+    image_file.parent.name for image_file in Path(DATA_FOLDER).glob("*/*.png")
+})
 # If we're just testing the code, we'll just use 1 sample for the test set
 PROP_OF_DATA_TEST = 0.2 
 if NUM_OF_CLASSES < 12:
