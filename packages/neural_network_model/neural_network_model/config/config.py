@@ -32,8 +32,11 @@ EPOCHS = int(os.environ.get('EPOCHS', 1))  # 1 for testing, 8 for final model
 NUM_OF_CLASSES = len(
     [y for y in [x.name for x in Path(DATA_FOLDER).iterdir() if x.is_dir()] if y[0] != "."]
 )
-# If we're just testing the code, we won't use any test data.
-PROP_OF_DATA_TEST = 0.2 if NUM_OF_CLASSES == 12 else 0.
+# If we're just testing the code, we'll just use 1 sample for the test set
+PROP_OF_DATA_TEST = 0.2 
+if NUM_OF_CLASSES < 12:
+    PROP_OF_DATA_TEST = 1
+    NUM_OF_CLASSES = NUM_OF_CLASSES - PROP_OF_DATA_TEST
 
 with open(os.path.join(PACKAGE_ROOT, 'VERSION')) as version_file:
     _version = version_file.read().strip()
