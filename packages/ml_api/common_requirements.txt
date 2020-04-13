@@ -1,5 +1,9 @@
 # Requirements for the API package *excluding* the model package
 
+# Fetching the neural_network_model package
+# from the Kaggle kernel output
+kaggle==1.5.6
+
 # api
 flask==1.0.2
 
