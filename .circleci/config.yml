@@ -35,6 +35,15 @@ train_model: &train_model
         . venv/bin/activate
         PYTHONPATH=./packages/regression_model python3 packages/regression_model/regression_model/train_pipeline.py
 
+fetch_nn_model_package: &fetch_nn_model_package
+  run:
+    name: Fetch the neural_network_model package distribution from Kaggle
+    command: |
+      source venv/bin/activate
+      pip install -r ./scripts/requirements.txt
+      chmod +x ./scripts/fetch_kaggle_nn_package.sh
+      ./scripts/fetch_kaggle_nn_package.sh
+
 jobs:
   test_regression_model:
     <<: *defaults
@@ -68,6 +77,7 @@ jobs:
           # Get workspace following model training step
           at: ~/project/packages/regression_model/regression_model
       - *prepare_venv
+      - *fetch_nn_model_package
       - run:
           name: Runnning tests
           command: |
@@ -109,6 +119,7 @@ jobs:
             . venv/bin/activate
             pip install -r packages/ml_api/diff_test_requirements.txt
             PYTHONPATH=./packages/ml_api python3 packages/ml_api/tests/capture_model_predictions.py
+      - *fetch_nn_model_package
       - run:
           name: Runnning differential tests
           command: |
@@ -169,7 +180,7 @@ jobs:
 
   section_13_train_and_upload_neural_network_model:
     docker:
-      - image: circleci/python:3.6.4-stretch
+      - image: circleci/python:3.6.6-stretch
     working_directory: ~/project
     steps:
       - checkout
@@ -203,6 +214,9 @@ workflows:
   test-all:
     jobs:
       - test_regression_model
+      # There is no equivalent "test_neural_network_model" because it would require
+      # training the model, which would require downloading the (large amount of) data.
+      # The tests are run during the package build script on Kaggle.
       - test_ml_api:
           requires:
             - test_regression_model
@@ -227,20 +241,20 @@ workflows:
                 # I have not tested that building the NN model package
                 # works, so it is unlikely that the CI tests will run properly
                 - do_not_want_this_to_run_yet
-      # - section_10_deploy_to_heroku:
-      #     requires:
-      #       - train_and_upload_regression_model
-      #     filters:
-      #       branches:
-      #         only:
-      #           - master_AB
-      - section_11_build_and_push_to_heroku_docker:
+      - section_10_deploy_to_heroku:
           requires:
             - train_and_upload_regression_model
           filters:
             branches:
               only:
                 - master_AB
+      # - section_11_build_and_push_to_heroku_docker:
+      #     requires:
+      #       - train_and_upload_regression_model
+      #     filters:
+      #       branches:
+      #         only:
+      #           - master_AB
       # - section_12_publish_docker_image_to_aws:
       #     requires:
       #       - train_and_upload_regression_model

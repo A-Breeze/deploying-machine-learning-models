@@ -125,13 +125,15 @@ Data is required for fitting the model in the `regression_model` package. It is 
     mkdir .kaggle
     mv kaggle.json .kaggle/kaggle.json
     ```
-- Now run the relevant script by:
+- Now ensure the requirements for fetching data are installed and run the relevant script by:
     ```
+    pip install -r ./scripts/requirements.txt
     chmod +x scripts/fetch_kaggle_dataset.sh
     scripts/fetch_kaggle_dataset.sh
     ```
 - Also get the `neural_network_model` package distribution from the Kaggle kernel output where it is built:
     ```
+    pip install -r ./scripts/requirements.txt
     chmod +x scripts/fetch_kaggle_nn_package.sh
     scripts/fetch_kaggle_nn_package.sh
     ```
