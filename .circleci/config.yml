@@ -142,6 +142,8 @@ jobs:
           # run, using the "filter:" yaml option in "workflows" below.
           name: Commit fetched NN model to the Git repo
           command: |
+            git config --global user.email "this_is.not_an@email.com"
+            git config --global user.name "Automated_CI_tasks"
             git checkout -b deployment_from_CI_only
             git add .
             git commit --allow-empty -m "deployment_from_CI_only: Add files to repo in CI tasks"
