@@ -142,7 +142,9 @@ Install the requirements, then run the script to train the pipeline.
 ```
 PYTHONPATH=./packages/regression_model python packages/regression_model/regression_model/train_pipeline.py
 # OR
-EPOCHS=1  # Default is 1 for testing the code. Use 8 for fitting the model
+export EPOCHS=1  # Default is 1 for testing the code. Use 8 for fitting the model
+python -c "import os; print(os.getenv('EPOCHS'))"  # Check it worked (i.e. python can access the env var)
+# Can also amend DATA_FOLDER. Default (for code testing) is: export DATA_FOLDER=packages/neural_network_model/neural_network_model/datasets/test_data
 PYTHONPATH=./packages/neural_network_model python packages/neural_network_model/neural_network_model/train_pipeline.py
 ```
 Logs are printed to console, and the model object is added in  `PACKAGE_ROOT / 'trained_models'` as per `packages/[...]_model/[...]_model/config/config.py`. For the `neural_network_model`, you can 
@@ -150,7 +152,7 @@ Logs are printed to console, and the model object is added in  `PACKAGE_ROOT / '
 ### Build the model package
 The following will create a *source* distribution and a *wheel* distribution out of a Python package that you have written (and which includes a `setup.py`), and puts the resulting files in `build/` and `dist/` folders.
 ```
-cd packages/regression_model 
+cd packages/regression_model    # OR:  cd packages/neural_network_model
 python setup.py sdist bdist_wheel
 cd ../..
 ```
@@ -164,6 +166,8 @@ pip install -e packages/regression_model
 ### Run automated tests: Model package
 ```
 pytest packages/regression_model/tests
+# OR
+pytest packages/neural_network_model/tests
 ```
 
 <p align="right"><a href="#top">Back to top</a></p>
@@ -206,8 +210,10 @@ Alternatively, you can query the API using `curl` from another console instance,
 ```
 curl -X GET localhost:8000/health
 curl -X GET localhost:8000/version
-# Use the scripts/input_test.json data to get a response
+# Use the scripts/input_test.json data to get a response from regression_model
 curl --header "Content-Type: application/json" --request POST --data "@scripts/input_test.json" localhost:8000/v1/predict/regression
+# Use test_data to get a response from neural_network_model
+curl --request POST -form "file=@packages/neural_network_model/neural_network_model/datasets/test_data/Black-grass/1.png;type=image/png" localhost:8000/predict/classifier
 ```
 
 ### Run automated tests: API package
@@ -275,7 +281,7 @@ This is done on [CircleCI](https://circleci.com/) (for which you need to sign up
     heroku git:remote -a udemy-ml-api-ab  # The name of the remote will be `heroku` (as opposed to `origin`)
     heroku logout   # The command to log out
     ```
-- If I were using GemFury to store my built packages, it requires an API key to get downloads to `pip`. The API key could be added as an environment variable to the app in Heroku by going to **Settings** - **Config Vars**.
+- If I were using GemFury to store my built packages, it requires an API key to get downloads to `pip`. The API key could be added as an environment variable to the app in Heroku by going to **Settings** - **Config Vars**. In fact, I am using Kaggle to store the `neural_network_model` package distribution, so I need to add the Kaggle API key to Heroku.
 
 #### Deploy
 ##### Manually
@@ -300,7 +306,7 @@ Alternatively, instead of logging on to Heroku, we can get an API key to the Her
     ```
 - Push it in one go without being logged on (substitute `$HEROKU_API_KEY`):
     ```
-    git push https://heroku:87ac20c4-3aba-4285-a45b-6e9ced9d9e6e@git.heroku.com/udemy-ml-api-ab.git master_AB:master
+    git push https://heroku:$HEROKU_API_KEY@git.heroku.com/udemy-ml-api-ab.git master_AB:master
     ```
 
 ##### Build Docker image then push
@@ -322,6 +328,7 @@ The following submits the JSON input data at `scripts/input_test.json` to the de
 ```
 curl --request GET https://udemy-ml-api-ab.herokuapp.com/version
 curl --header "Content-Type: application/json" --request POST --data "@scripts/input_test.json" https://udemy-ml-api-ab.herokuapp.com/v1/predict/regression
+curl --request POST -form "file=@packages/neural_network_model/neural_network_model/datasets/test_data/Black-grass/1.png;type=image/png" https://udemy-ml-api-ab.herokuapp.com/v1/predict/classifier
 ```
 
 #### Other commands
@@ -352,7 +359,12 @@ I spent some time trying to get VSCode to work inside JupyterLab on Binder, usin
 When I first installed Heroku CLI, for any command entered, I got a message saying an update (to `6.99.0`) is available. I ignored it (as per <https://github.com/heroku/cli/issues/1182#issue-397716857>), and it appears to have gone away after some time.
 
 #### Dyno hours on free account
-The free option for Heroku gives 550 dyno hours per month. To check how many have been used and are remaining, see here: <https://help.heroku.com/FRHZA2YG/how-do-i-monitor-my-free-dyno-hours-quota>.
+The free option for Heroku gives 550 dyno hours per month. To check how many have been used and are remaining, see here: <https://help.heroku.com/FRHZA2YG/how-do-i-monitor-my-free-dyno-hours-quota> or run the following from the Heroku API (for each app that I have):
+```
+heroku login -i
+heroku ps -a udemy-ml-api-ab
+heroku logout
+```
 
 #### Platform API
 To use the Heroku Platform API from Windows, we need to:
