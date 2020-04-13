@@ -151,7 +151,7 @@ packages/neural_network_model/neural_network_model/trained_models/*.h5
 packages/regression_model/dist/*
 !packages/regression_model/dist/regression_model-*.tar.gz
 packages/neural_network_model/dist/*
-!packages/neural_network_model/dist/neural_network_model-*.tar.gz
+!packages/neural_network_model/dist/neural_network_model-*
 
 packages/ml_api/uploads/*
 
