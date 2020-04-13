@@ -7,6 +7,8 @@ venv/*
 binder*
 packages/regression_model/*
 !packages/regression_model/dist/regression_model-*.tar.gz
+packages/neural_network_model/*
+!packages/neural_network_model/dist/neural_network_model-*
 *.env
 *.log
 .git

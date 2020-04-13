@@ -1,5 +1,5 @@
 # This is a Linux image containing Python
-FROM python:3.6.4
+FROM python:3.6.6
 
 # Create the user that will run the app named "ml-api-user"
 RUN adduser --disabled-password --gecos '' ml-api-user
@@ -9,11 +9,15 @@ WORKDIR /opt
 # ARG PIP_EXTRA_INDEX_URL # AB: I'm not using GemFury, so don't need this command
 ENV FLASK_APP run.py
 
-# Install requirements, including from Gemfury
+# ==== Install requirements ====
+# Fetch the neural_network_model package from Kaggle
+RUN chmod +x ./scripts/fetch_kaggle_nn_package.sh
+RUN ./scripts/fetch_kaggle_nn_package.sh
 # Copy everything from a repo directory to a container directory
 ADD ./packages/ml_api /opt/packages/ml_api/
-# The API will need the regression_model package distribution available to install
+# The API will need the model package distributions available to install
 ADD ./packages/regression_model/dist /opt/packages/regression_model/dist/
+ADD ./packages/neural_network_model/dist /opt/packages/neural_network_model/dist/
 RUN pip install --upgrade pip
 RUN pip install -r /opt/packages/ml_api/requirements.txt
 

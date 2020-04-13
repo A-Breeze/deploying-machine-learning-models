@@ -17,6 +17,7 @@ packages/regression_model/regression_model*
 packages/regression_model/tests*
 packages/neural_network_model/neural_network_model*
 packages/neural_network_model/tests*
+scripts/*
 *.env
 *.log
 .git
