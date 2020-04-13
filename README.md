@@ -69,11 +69,11 @@ We create a conda-env to track the version of Python, and then use a `venv` that
 
 ## Structure of the repo and course
 *Note*: The structure of the repo changes as we work through the course, so the description here may not be entirely up to date. Section numbers refer to the Udemy course. 
-- `jupyter_notebooks/.` **Section 2** and **Section 13**: Notebooks that were originally used to analyse the data and build the model, i.e. the *research environment*. Since then, the main code has been converted to the `regression_model` package (see below), so these are no longer part of the (automated) modelling pipeline. They are kept in the repo as an example of how the inspiration would be kept close to the deployment code (i.e. a *mono-repo*). To run the notebooks, you need to:
+- `jupyter_notebooks/.` **Section 2** and **Section 13**: Notebooks that were originally used to analyse the data and build the model, i.e. the *research environment*. Since then, the main code has been converted to the model packages (see below), so these are no longer part of the (automated) modelling pipeline. They are kept in the repo as an example of how the inspiration would be kept close to the deployment code (i.e. a *mono-repo*). To run the notebooks, you need to:
     1. Get the data for modelling, as [below](#Get-data-for-modelling)
     1. Install the dependencies for the research environment:
         ```
-        pip install -r jupyter_notebooks/requirements.txt
+        pip install -r jupyter_notebooks/Section2_MLPipelineOverview/requirements.txt
         ```
     
     Other notes: 
@@ -128,7 +128,7 @@ Data is required for fitting the model in the `regression_model` package. It is 
     ```
 - Now ensure the requirements for fetching data are installed and run the relevant script by:
     ```
-    pip install -r ./scripts/requirements.txt
+    
     chmod +x scripts/fetch_kaggle_dataset.sh
     scripts/fetch_kaggle_dataset.sh
     ```
@@ -311,6 +311,8 @@ Alternatively, instead of logging on to Heroku, we can get an API key to the Her
     ```
     git push https://heroku:$HEROKU_API_KEY@git.heroku.com/udemy-ml-api-ab.git master_AB:master
     ```
+
+**Note**: This method of using `git push` to deploy to Heroku is currently failing (through the CirclCI automated CI commands) because the size of the resulting slug is above Heroku's 500 MB limit - but not by much, as it is coming in at 566 MB. Consider re-factoring the `neural_network_model` package so that it does not have `opencv-python` (i.e. the `cv2` module) as a dependency - at the moment, it is only used to resize images in one place.
 
 ##### Build Docker image then push
 This is implemented in the CircleCI task `section_11_build_and_push_to_heroku_docker` (for `master_AB` branch only). See the comments in `.circleci/config` and `Makefile`. Docs are here:
