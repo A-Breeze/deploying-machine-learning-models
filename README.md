@@ -45,7 +45,7 @@ It *should* be possible to run the code in JupyterLab (or another IDE) from your
 All console commands are **run from the root folder of this project** unless otherwise stated.
 
 ### Start Binder instance
-[![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/A-Breeze/deploying-machine-learning-models/build_v110?urlpath=lab)
+[![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/A-Breeze/deploying-machine-learning-models/Sect13_NN_model?urlpath=lab)
 
 ### Package environment
 We create a conda-env to track the version of Python, and then use a `venv` that is specified *within* the conda-env.
@@ -89,7 +89,8 @@ We create a conda-env to track the version of Python, and then use a `venv` that
 - `scripts/`
     - `fetch_kaggle_dataset.sh`: Automatically get the data (in this case, from an online Kaggle API).
     - `fetch_kaggle_large_dataset.sh`: Same but for the `neural_network_model`. \[I am not running this - build the package on Kaggle.\]
-    - `publish_model.sh`: Push the model package to an online repo. \[I decided not to do this, to avoid signing up to another service.\]
+    - `fetch_kaggle_nn_package.sh`: The `neural_network_model` package built distribution is stored on Kaggle. This script fetches it. You must *manually* ensure the Kaggle dataset that stores the distribution is updated from the latest build: <https://www.kaggle.com/btw78jt/neural-network-package-repo>.
+    - `publish_model.sh`: Push a model package to an online repo. \[I decided not to do this, to avoid signing up to another service.\]
 - `.circleci` **Section 8**: Configure tasks to be run in Continuous Integration pipeline.
 - `Procfile` **Section 10**: Configuration for the Heroku deployment.
 - `Dockerfile` and `Makefile`: Docker image specifications used for:

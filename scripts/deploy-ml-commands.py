@@ -11,6 +11,18 @@ To avoid having to download the accompanying dataset (which is 2GB),
 these commands have been run on a Kaggle Kernel to build the 
 neural_network_model package. The resulting package distribution can be
 manually downloaded and added to the Git repo, to be deployed.
+
+**IMPORTANT**
+This script uses a dataset "deployingmachinelearningmodelsab" which contains
+the project GitHub repo. The dataset does *not* automatically update when the
+GitHub repo changes. You must update it *manually* by:
+1.Ensure the branch you want is set as the *default branch* on GitHub.
+    - Go to the repo home page - Settings - Branches - Default branch
+2. Click "Update" on the Kaggle dataset page.
+    - <https://www.kaggle.com/btw78jt/deployingmachinelearningmodelsab>
+3. It will create a new version even if nothing has changed. Therefore,
+check that a change from the most recent commit has correctly come 
+through to the Kaggle dataset.
 """
 
 print(
