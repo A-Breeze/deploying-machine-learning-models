@@ -3,10 +3,11 @@ import json
 import math
 import os
 
+from neural_network_model import __version__ as nn_version
 from neural_network_model.config import config as ccn_config
 from regression_model.config import config as model_config
 from regression_model.processing.data_management import load_dataset
-from regression_model import __version__ as _version
+from regression_model import __version__ as reg_version
 
 from api import __version__ as api_version
 
@@ -26,7 +27,8 @@ def test_version_endpoint_returns_version(flask_test_client):
     # Then
     assert response.status_code == 200
     response_json = json.loads(response.data)
-    assert response_json['model_version'] == _version
+    assert response_json['regression_model_version'] == reg_version
+    assert response_json['neural_network_model_version'] == nn_version
     assert response_json['api_version'] == api_version
 
 
@@ -49,7 +51,7 @@ def test_prediction_endpoint_returns_prediction(flask_test_client):
     prediction = response_json['predictions']
     response_version = response_json['version']
     assert math.ceil(prediction[0]) == 112476
-    assert response_version == _version
+    assert response_version == reg_version
 
 
 def test_classifier_endpoint_returns_prediction(flask_test_client):

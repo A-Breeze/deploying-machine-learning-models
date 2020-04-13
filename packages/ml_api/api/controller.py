@@ -1,6 +1,7 @@
 from flask import Blueprint, request, jsonify
 from regression_model.predict import make_prediction
-from regression_model import __version__ as _version
+from regression_model import __version__ as reg_version
+from neural_network_model import __version__ as nn_version
 from neural_network_model.predict import make_single_prediction
 import os
 from werkzeug.utils import secure_filename
@@ -25,7 +26,8 @@ def health():
 @prediction_app.route('/version', methods=['GET'])
 def version():
     if request.method == 'GET':
-        return jsonify({'model_version': _version,
+        return jsonify({'regression_model_version': reg_version,
+                        'neural_network_model_version': nn_version,
                         'api_version': api_version})
 
 
