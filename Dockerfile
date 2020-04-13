@@ -16,7 +16,7 @@ ADD ./scripts /opt/scripts/
 # The API will need the model package distributions available to install
 ADD ./packages/regression_model/dist /opt/packages/regression_model/dist/
 # Fetch the neural_network_model package from Kaggle
-RUN chmod +x /opt/scripts/ml_api/fetch_kaggle_nn_package.sh
+RUN chmod +x /opt/scripts/fetch_kaggle_nn_package.sh
 RUN pip install --upgrade pip
 RUN pip install -r /opt/scripts/requirements.txt
 RUN /opt/scripts/ml_api/fetch_kaggle_nn_package.sh
