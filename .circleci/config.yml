@@ -134,9 +134,21 @@ jobs:
       - *prepare_venv
       - *fetch_nn_model_package
       - run:
+          # Need to do this so that the subsequent 'git push' command will
+          # transfer the recently added files. (The alternative Docker
+          # implementation is more flexible at this point.)
+          # It also means the branch name in the 'git push' command is 
+          # abstract, so we can properly configure on which branch this task is
+          # run, using the "filter:" yaml option in "workflows" below.
+          name: Commit fetched NN model to the Git repo
+          command: |
+            git checkout -b deployment_from_CI_only
+            git add .
+            git commit --allow-empty -m "deployment_from_CI_only: Add files to repo in CI tasks"
+      - run:
           name: Deploy to Heroku
           command: |
-            git push https://heroku:$HEROKU_API_KEY@git.heroku.com/$HEROKU_APP_NAME.git Sect13_NN_model:master
+            git push https://heroku:$HEROKU_API_KEY@git.heroku.com/$HEROKU_APP_NAME.git deployment_from_CI_only:master
   
   section_11_build_and_push_to_heroku_docker:
     <<: *defaults
