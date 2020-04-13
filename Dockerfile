@@ -7,8 +7,6 @@ RUN adduser --disabled-password --gecos '' ml-api-user
 WORKDIR /opt
 
 # ARG PIP_EXTRA_INDEX_URL # AB: I'm not using GemFury, so don't need this command
-ARG KAGGLE_USERNAME
-ARG KAGGLE_KEY
 ENV FLASK_APP run.py
 
 # ==== Install requirements ====
