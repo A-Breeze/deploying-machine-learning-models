@@ -19,7 +19,7 @@ ADD ./packages/regression_model/dist /opt/packages/regression_model/dist/
 RUN chmod +x /opt/scripts/fetch_kaggle_nn_package.sh
 RUN pip install --upgrade pip
 RUN pip install -r /opt/scripts/requirements.txt
-RUN /opt/scripts/ml_api/fetch_kaggle_nn_package.sh
+RUN /opt/scripts/fetch_kaggle_nn_package.sh
 RUN pip install -r /opt/packages/ml_api/requirements.txt
 
 # Give permissions to the user to run the script and own the directory
