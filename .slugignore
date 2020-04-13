@@ -1,0 +1,24 @@
+# List of folders and files to ignore for the purpose of the Heroku build.
+# Ignoring unnecessary files limits the size of the repo and the time it
+# takes to build. See: <https://devcenter.heroku.com/articles/slug-compiler>
+# Ignored files will still be pushed to the Heroku remote repo, but not 
+# compressed (into a "slug") and so discarded without being counted towards
+# the size limit.
+# `.slugignore` does *not* support negated `!` patterns.
+
+jupyter_notebooks*
+env/*
+venv/*
+.circleci*
+.idea*
+.vscode*
+binder*
+packages/regression_model/regression_model*
+packages/regression_model/tests*
+packages/neural_network_model/neural_network_model*
+packages/neural_network_model/tests*
+*.env
+*.log
+.git
+.gitignore
+environment.yml
