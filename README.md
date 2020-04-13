@@ -317,6 +317,16 @@ This is implemented in the CircleCI task `section_11_build_and_push_to_heroku_do
 - Heroku Docker container registry - push and release: <https://devcenter.heroku.com/articles/container-registry-and-runtime#pushing-an-existing-image>
 - Using a CI/CD platform to automate it: <https://devcenter.heroku.com/articles/container-registry-and-runtime#using-a-ci-cd-platform>
 
+If you build using Docker, but then wish to switch back to the `git push` method, you need to first manually change the `stack` that the app uses. Specifically:
+```
+heroku login -i
+heroku apps:stacks -a udemy-ml-api-ab  # Get a list of the available stacks for this app
+# If using Docker, then the "container" stack will be selected.
+heroku stack:set heroku-18 -a udemy-ml-api-ab   # To switch to the "heroku-18" option
+```
+`heroku-18` is currently the default stack for new apps. See: <https://devcenter.heroku.com/articles/stack>
+
+
 #### See it running
 From the dashboard, click **Open app**. Alternatively, it is here: <https://udemy-ml-api-ab.herokuapp.com/version>.
 
