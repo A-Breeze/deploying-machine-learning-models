@@ -10,15 +10,16 @@ WORKDIR /opt
 ENV FLASK_APP run.py
 
 # ==== Install requirements ====
-# Fetch the neural_network_model package from Kaggle
-RUN chmod +x ./scripts/fetch_kaggle_nn_package.sh
-RUN ./scripts/fetch_kaggle_nn_package.sh
 # Copy everything from a repo directory to a container directory
 ADD ./packages/ml_api /opt/packages/ml_api/
+ADD ./scripts /opt/scripts/
 # The API will need the model package distributions available to install
 ADD ./packages/regression_model/dist /opt/packages/regression_model/dist/
-ADD ./packages/neural_network_model/dist /opt/packages/neural_network_model/dist/
+# Fetch the neural_network_model package from Kaggle
+RUN chmod +x /opt/scripts/ml_api/fetch_kaggle_nn_package.sh
 RUN pip install --upgrade pip
+RUN pip install -r /opt/scripts/requirements.txt
+RUN /opt/scripts/ml_api/fetch_kaggle_nn_package.sh
 RUN pip install -r /opt/packages/ml_api/requirements.txt
 
 # Give permissions to the user to run the script and own the directory
