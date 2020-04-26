@@ -45,7 +45,7 @@ It *should* be possible to run the code in JupyterLab (or another IDE) from your
 All console commands are **run from the root folder of this project** unless otherwise stated.
 
 ### Start Binder instance
-[![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/A-Breeze/deploying-machine-learning-models/Ssect13_NN_model?urlpath=lab)
+[![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/A-Breeze/deploying-machine-learning-models/master_AB?urlpath=lab)
 
 ### Package environment
 We create a conda-env to track the version of Python, and then use a `venv` that is specified *within* the conda-env.
@@ -312,7 +312,7 @@ Alternatively, instead of logging on to Heroku, we can get an API key to the Her
     git push https://heroku:$HEROKU_API_KEY@git.heroku.com/udemy-ml-api-ab.git master_AB:master
     ```
 
-**Note**: This method of using `git push` to deploy to Heroku is currently failing (through the CircleCI automated CI commands) because the size of the resulting slug is above Heroku's 500 MB limit - but not by much, as it is coming in at 566 MB.
+**Note**: This method of using `git push` to deploy to Heroku is currently failing (through the CircleCI automated CI commands) because the size of the resulting slug is above Heroku's 500 MB limit - but not by much, as it is coming in at 591 MB. If we use cv2 (i.e. opencv-python) package instead of matplotlib.image and scikit-image, the size is still 566 MB.
 
 ##### Build Docker image then push
 This is implemented in the CircleCI task `section_11_build_and_push_to_heroku_docker` (for `master_AB` branch only). See the comments in `.circleci/config` and `Makefile`. Docs are here:

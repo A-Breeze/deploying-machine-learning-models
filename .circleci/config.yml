@@ -246,7 +246,7 @@ workflows:
           filters:
             branches:
               only:
-                - Sect13_NN_model
+                - master_AB
       - section_13_train_and_upload_neural_network_model:
           requires:
             - test_ml_api
@@ -257,20 +257,20 @@ workflows:
                 # I have not tested that building the NN model package
                 # works, so it is unlikely that the CI tests will run properly
                 - do_not_want_this_to_run_yet
-      - section_10_deploy_to_heroku:
-          requires:
-            - train_and_upload_regression_model
-          filters:
-            branches:
-              only:
-                - Sect13_NN_model
-      # - section_11_build_and_push_to_heroku_docker:
+      # - section_10_deploy_to_heroku:
       #     requires:
       #       - train_and_upload_regression_model
       #     filters:
       #       branches:
       #         only:
       #           - Sect13_NN_model
+      - section_11_build_and_push_to_heroku_docker:
+          requires:
+            - train_and_upload_regression_model
+          filters:
+            branches:
+              only:
+                - master_AB
       # - section_12_publish_docker_image_to_aws:
       #     requires:
       #       - train_and_upload_regression_model
