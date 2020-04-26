@@ -1,0 +1,10 @@
+name: deploy_ML_research_env
+channels:
+  - conda-forge
+dependencies:
+  - python==3.6.6
+  - pip==20.0.2
+  # Need ipykernel so this conda-env can be set up as a Jupyter kernel
+  - ipython==6.4.0
+  - ipykernel==5.1.4
+ 

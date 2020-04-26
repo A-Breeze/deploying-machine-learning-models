@@ -129,6 +129,7 @@ venv.bak/
 .idea/*
 
 # datafiles
+house-prices-advanced-regression-techniques.zip
 train.csv
 test.csv
 test_data_predictions.csv

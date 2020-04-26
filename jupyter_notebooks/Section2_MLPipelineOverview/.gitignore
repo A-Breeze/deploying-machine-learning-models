@@ -1,0 +1,4 @@
+# Ignore modelling artefacts
+*.npy
+*.csv
+*.pkl
