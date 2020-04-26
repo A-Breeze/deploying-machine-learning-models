@@ -3,7 +3,7 @@
 # AB note: Section 8.4 recommends using GemFury, but I decided not to. This script is therefore not used
 # Building packages and uploading them to a Gemfury repository
 
-GEMFURY_URL=$PIP_EXTRA_INDEX_URL
+GEMFURY_URL=$GEMFURY_PUSH_URL
 
 set -e
 

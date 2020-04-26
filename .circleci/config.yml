@@ -2,7 +2,7 @@ version: 2
 
 defaults: &defaults
   docker:
-    - image: circleci/python:3.7.2
+    - image: circleci/python:3.6.6
   working_directory: ~/project
 
 prepare_venv: &prepare_venv
@@ -34,6 +34,15 @@ train_model: &train_model
       command: |
         . venv/bin/activate
         PYTHONPATH=./packages/regression_model python3 packages/regression_model/regression_model/train_pipeline.py
+
+fetch_nn_model_package: &fetch_nn_model_package
+  run:
+    name: Fetch the neural_network_model package distribution from Kaggle
+    command: |
+      source venv/bin/activate
+      pip install -r ./scripts/requirements.txt
+      chmod +x ./scripts/fetch_kaggle_nn_package.sh
+      ./scripts/fetch_kaggle_nn_package.sh
 
 jobs:
   test_regression_model:
@@ -68,6 +77,7 @@ jobs:
           # Get workspace following model training step
           at: ~/project/packages/regression_model/regression_model
       - *prepare_venv
+      - *fetch_nn_model_package
       - run:
           name: Runnning tests
           command: |
@@ -109,6 +119,7 @@ jobs:
             . venv/bin/activate
             pip install -r packages/ml_api/diff_test_requirements.txt
             PYTHONPATH=./packages/ml_api python3 packages/ml_api/tests/capture_model_predictions.py
+      - *fetch_nn_model_package
       - run:
           name: Runnning differential tests
           command: |
@@ -120,10 +131,26 @@ jobs:
     <<: *defaults
     steps:
       - checkout
+      - *prepare_venv
+      - *fetch_nn_model_package
+      - run:
+          # Need to do this so that the subsequent 'git push' command will
+          # transfer the recently added files. (The alternative Docker
+          # implementation is more flexible at this point.)
+          # It also means the branch name in the 'git push' command is 
+          # abstract, so we can properly configure on which branch this task is
+          # run, using the "filter:" yaml option in "workflows" below.
+          name: Commit fetched NN model to the Git repo
+          command: |
+            git config --global user.email "this_is.not_an@email.com"
+            git config --global user.name "Automated_CI_tasks"
+            git checkout -b deployment_from_CI_only
+            git add .
+            git commit --allow-empty -m "deployment_from_CI_only: Add files to repo in CI tasks"
       - run:
           name: Deploy to Heroku
           command: |
-            git push https://heroku:$HEROKU_API_KEY@git.heroku.com/$HEROKU_APP_NAME.git master_AB:master
+            git push https://heroku:$HEROKU_API_KEY@git.heroku.com/$HEROKU_APP_NAME.git deployment_from_CI_only:master
   
   section_11_build_and_push_to_heroku_docker:
     <<: *defaults
@@ -167,11 +194,45 @@ jobs:
             make build-ml-api-aws tag-ml-api push-ml-api-aws
             aws ecs update-service --cluster ml-api-cluster --service custom-service --task-definition  first-run-task-definition --force-new-deployment
 
+  section_13_train_and_upload_neural_network_model:
+    docker:
+      - image: circleci/python:3.6.6-stretch
+    working_directory: ~/project
+    steps:
+      - checkout
+      - *prepare_venv
+      - run: 
+          name: Install requirements
+          command: |
+            . venv/bin/activate
+            pip install -r packages/neural_network_model/requirements.txt
+      - run:
+          name: Fetch Training data - 2GB
+          command: |
+            . venv/bin/activate
+            chmod +x ./scripts/fetch_kaggle_large_dataset.sh
+            ./scripts/fetch_kaggle_large_dataset.sh
+      - run: 
+          name: Train model
+          command: |
+            . venv/bin/activate
+            PYTHONPATH=./packages/neural_network_model python3 packages/neural_network_model/neural_network_model/train_pipeline.py
+      - run: 
+          name: Publish model to Gemfury
+          command: |
+            . venv/bin/activate
+            # AB note: Section 8.4 recommends using GemFury, but I decided not to. The following line is therefore commented out
+            # chmod +x ./scripts/publish_model.sh
+            # ./scripts/publish_model.sh ./packages/neural_network_model/
+
 workflows:
   version: 2
   test-all:
     jobs:
       - test_regression_model
+      # There is no equivalent "test_neural_network_model" because it would require
+      # training the model, which would require downloading the (large amount of) data.
+      # The tests are run during the package build script on Kaggle.
       - test_ml_api:
           requires:
             - test_regression_model
@@ -186,13 +247,23 @@ workflows:
             branches:
               only:
                 - master_AB
+      - section_13_train_and_upload_neural_network_model:
+          requires:
+            - test_ml_api
+            - section_9_differential_tests
+          filters:
+            branches:
+              only:
+                # I have not tested that building the NN model package
+                # works, so it is unlikely that the CI tests will run properly
+                - do_not_want_this_to_run_yet
       # - section_10_deploy_to_heroku:
       #     requires:
       #       - train_and_upload_regression_model
       #     filters:
       #       branches:
       #         only:
-      #           - master_AB
+      #           - Sect13_NN_model
       - section_11_build_and_push_to_heroku_docker:
           requires:
             - train_and_upload_regression_model

@@ -7,6 +7,7 @@
 .config/
 .ipython/
 .jupyter/
+.keras/
 .local/
 .npm/
 .profile
@@ -14,6 +15,8 @@
 
 # Never commit the Kaggle API key
 .kaggle/kaggle.json
+**/kaggle.json
+kaggle.json
 
 # --------------
 
@@ -131,21 +134,32 @@ test.csv
 test_data_predictions.csv
 data_description.txt
 sample_submission.csv
+v2-plant-seedlings-dataset/
+v2-plant-seedlings-dataset.zip
 
 # all logs
 logs/
+packages/neural_network_model/neural_network_model/datasets/training_data_reference.txt
 
-# ------------------------
-# AB Amendments
 # trained models (will be created in CI)
 packages/regression_model/regression_model/trained_models/*.pkl
+packages/neural_network_model/neural_network_model/trained_models/*.pkl
+packages/neural_network_model/neural_network_model/trained_models/*.h5
+*.h5
 # ...but *include* previous built model package versions, for differential testing
 # See here for gitignore negation patterns: <https://www.atlassian.com/git/tutorials/saving-changes/gitignore>
 packages/regression_model/dist/*
 !packages/regression_model/dist/regression_model-*.tar.gz
+packages/neural_network_model/dist/*
+!packages/neural_network_model/dist/neural_network_model-*
+
+packages/ml_api/uploads/*
 
 # Include any run configurations that are marked to 'Share'
 !.idea/runConfigurations/
 
 # Ignore VSCode settings
 .vscode/
+
+# Extra files on Mac OS
+.DS_Store

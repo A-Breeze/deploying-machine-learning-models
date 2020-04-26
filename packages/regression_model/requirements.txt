@@ -1,15 +1,15 @@
-# production requirements
-numpy==1.15.4
-scikit-learn==0.20.2
-pandas==0.23.4
-
 # packaging
-setuptools==40.6.3
-wheel==0.32.3
+setuptools==46.1.3
+wheel==0.34.2
+
+# production requirements
+joblib==0.14.1
+numpy==1.18.2
+pandas==0.25.3
+scikit-learn==0.22.2.post1
 
 # testing requirements
-attrs==19.1.0 # [AB 2019-11-15]: Added because a recent upgrade appears to break pytest. See: <https://github.com/pytest-dev/pytest/issues/3280#issuecomment-538031871>
-pytest==4.0.2
+pytest==5.0.1
 
 # fetching datasets
-kaggle==1.5.1.1
+kaggle==1.5.6

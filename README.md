@@ -45,7 +45,7 @@ It *should* be possible to run the code in JupyterLab (or another IDE) from your
 All console commands are **run from the root folder of this project** unless otherwise stated.
 
 ### Start Binder instance
-[![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/A-Breeze/deploying-machine-learning-models/Sect11_Docker?urlpath=lab)
+[![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/A-Breeze/deploying-machine-learning-models/master_AB?urlpath=lab)
 
 ### Package environment
 We create a conda-env to track the version of Python, and then use a `venv` that is specified *within* the conda-env.
@@ -54,6 +54,7 @@ We create a conda-env to track the version of Python, and then use a `venv` that
     conda activate notebook
     python -m venv venv
     source venv/bin/activate
+    pip install --upgrade pip  # Necessary to have pip>=19.0.* for tensorflow
     ```
 - **Locally** (on Windows):
     ```
@@ -61,28 +62,35 @@ We create a conda-env to track the version of Python, and then use a `venv` that
     conda activate deploy_ml_env
     python -m venv venv
     source venv\Scripts\activate
+    pip install --upgrade pip
     ```
 
 <p align="right"><a href="#top">Back to top</a></p>
 
 ## Structure of the repo and course
 *Note*: The structure of the repo changes as we work through the course, so the description here may not be entirely up to date. Section numbers refer to the Udemy course. 
-- `jupyter_notebooks/.` **Section 2**: Notebooks that were originally used to analyse the data and build the model, i.e. the *research environment*. Since then, the main code has been converted to the `regression_model` package (see below), so these are no longer part of the (automated) modelling pipeline. They are kept in the repo as an example of how the inspiration would be kept close to the deployment code (i.e. a *mono-repo*). To run the notebooks, you need to:
-    1. Get the data for modelling, as [above](#Get-data-for-modelling)
+- `jupyter_notebooks/.` **Section 2** and **Section 13**: Notebooks that were originally used to analyse the data and build the model, i.e. the *research environment*. Since then, the main code has been converted to the model packages (see below), so these are no longer part of the (automated) modelling pipeline. They are kept in the repo as an example of how the inspiration would be kept close to the deployment code (i.e. a *mono-repo*). To run the notebooks, you need to:
+    1. Get the data for modelling, as [below](#Get-data-for-modelling)
     1. Install the dependencies for the research environment:
         ```
-        pip install -r jupyter_notebooks/requirements.txt
+        pip install -r jupyter_notebooks/Section2_MLPipelineOverview/requirements.txt
         ```
     
-    **Note**: The notebook code does **not** currently run properly. Ideally, this would be fixed.
+    Other notes: 
+    - The notebook code does **not** currently run properly. Ideally, this would be fixed.
+    - The notebook for research of the `neural_network_model` was run in a Kaggle kernel *not* within Binder. The Kaggle kernel (that is kept in sync *manually* with the copy of the notebook in this repo) is here: <https://www.kaggle.com/btw78jt/deploy-ml-course-cnn>
+    
 - **Section 3**: Considerations for the architecture of the package.
 - `packages/`:
     - `regression_model`  **Section 4 and 6**: A reproducible pipeline to build the model from source data, including pre-processing.
+    - `neural_network_model` **Section 13**: The dataset for this model is large (2GB), so I don't want to load it into Binder (as per: <https://github.com/binder-examples/getting-data#large-public-files>). Therefore, I have created a Kaggle Kernel and uploaded this repo as a "dataset" for the kernel. The commands to train and build the package are recorded on Kaggle and also copied here: **TODO**: Save Kaggle script into GitHub repo.
     - `ml_api` **Section 7**: Serve the model as a Flask API to be consumed.
         - `tests/differential_tests/` **Section 9**
 - `scripts/`
     - `fetch_kaggle_dataset.sh`: Automatically get the data (in this case, from an online Kaggle API).
-    - `publish_model.sh`: Push the model package to an online repo. \[I decided not to do this, to avoid signing up to another service.\]
+    - `fetch_kaggle_large_dataset.sh`: Same but for the `neural_network_model`. \[I am not running this - build the package on Kaggle.\]
+    - `fetch_kaggle_nn_package.sh`: The `neural_network_model` package built distribution is stored on Kaggle. This script fetches it. You must *manually* ensure the Kaggle dataset that stores the distribution is updated from the latest build: <https://www.kaggle.com/btw78jt/neural-network-package-repo>.
+    - `publish_model.sh`: Push a model package to an online repo. \[I decided not to do this, to avoid signing up to another service.\]
 - `.circleci` **Section 8**: Configure tasks to be run in Continuous Integration pipeline.
 - `Procfile` **Section 10**: Configuration for the Heroku deployment.
 - `Dockerfile` and `Makefile`: Docker image specifications used for:
@@ -103,7 +111,10 @@ You'll generally want to carry out the tasks in the order given in this document
 ### Install dependencies: Model package
 ```
 pip install -r packages/regression_model/requirements.txt
+# OR
+pip install -r packages/neural_network_model/requirements.txt
 ```
+For some reason, on Binder, I could install the pip `neural_network_model` into the *conda-env* `notebook`, but *not* into the `venv` (Error message: `Could not find a version that satisfies the requirement tensorflow==2.1.0`). I was only testing anyway, so I did not pursue an explanation. 
 
 ### Get data for modelling
 Data is required for fitting the model in the `regression_model` package. It is downloaded from Kaggle using the Kaggle CLI. For this we need an API key as per <https://www.kaggle.com/docs/api>.
@@ -115,10 +126,17 @@ Data is required for fitting the model in the `regression_model` package. It is 
     mkdir .kaggle
     mv kaggle.json .kaggle/kaggle.json
     ```
-- Now run the relevant script by:
+- Now ensure the requirements for fetching data are installed and run the relevant script by:
     ```
+    
     chmod +x scripts/fetch_kaggle_dataset.sh
     scripts/fetch_kaggle_dataset.sh
+    ```
+- Also get the `neural_network_model` package distribution from the Kaggle kernel output where it is built:
+    ```
+    pip install -r ./scripts/requirements.txt
+    chmod +x scripts/fetch_kaggle_nn_package.sh
+    scripts/fetch_kaggle_nn_package.sh
     ```
 - **REMEMBER** to `Expire API Token` on Kaggle (or delete the `kaggle.json` from Binder) after running (because Binder cannot be guaranteed to be secure).
 
@@ -126,13 +144,18 @@ Data is required for fitting the model in the `regression_model` package. It is 
 Install the requirements, then run the script to train the pipeline.
 ```
 PYTHONPATH=./packages/regression_model python packages/regression_model/regression_model/train_pipeline.py
+# OR
+export EPOCHS=1  # Default is 1 for testing the code. Use 8 for fitting the model
+python -c "import os; print(os.getenv('EPOCHS'))"  # Check it worked (i.e. python can access the env var)
+# Can also amend DATA_FOLDER. Default (for code testing) is: export DATA_FOLDER=packages/neural_network_model/neural_network_model/datasets/test_data
+PYTHONPATH=./packages/neural_network_model python packages/neural_network_model/neural_network_model/train_pipeline.py
 ```
-Logs are printed to console, and the model object is added in  `PACKAGE_ROOT / 'trained_models'` as per `packages/regression_model/regression_model/config/config.py`.
+Logs are printed to console, and the model object is added in  `PACKAGE_ROOT / 'trained_models'` as per `packages/[...]_model/[...]_model/config/config.py`. For the `neural_network_model`, you can 
 
 ### Build the model package
 The following will create a *source* distribution and a *wheel* distribution out of a Python package that you have written (and which includes a `setup.py`), and puts the resulting files in `build/` and `dist/` folders.
 ```
-cd packages/regression_model 
+cd packages/regression_model    # OR:  cd packages/neural_network_model
 python setup.py sdist bdist_wheel
 cd ../..
 ```
@@ -146,6 +169,8 @@ pip install -e packages/regression_model
 ### Run automated tests: Model package
 ```
 pytest packages/regression_model/tests
+# OR
+pytest packages/neural_network_model/tests
 ```
 
 <p align="right"><a href="#top">Back to top</a></p>
@@ -188,8 +213,10 @@ Alternatively, you can query the API using `curl` from another console instance,
 ```
 curl -X GET localhost:8000/health
 curl -X GET localhost:8000/version
-# Use the scripts/input_test.json data to get a response
+# Use the scripts/input_test.json data to get a response from regression_model
 curl --header "Content-Type: application/json" --request POST --data "@scripts/input_test.json" localhost:8000/v1/predict/regression
+# Use test_data to get a response from neural_network_model
+curl --request POST -form "file=@packages/neural_network_model/neural_network_model/datasets/test_data/Black-grass/1.png;type=image/png" localhost:8000/predict/classifier
 ```
 
 ### Run automated tests: API package
@@ -257,7 +284,7 @@ This is done on [CircleCI](https://circleci.com/) (for which you need to sign up
     heroku git:remote -a udemy-ml-api-ab  # The name of the remote will be `heroku` (as opposed to `origin`)
     heroku logout   # The command to log out
     ```
-- If I were using GemFury to store my built packages, it requires an API key to get downloads to `pip`. The API key could be added as an environment variable to the app in Heroku by going to **Settings** - **Config Vars**.
+- If I were using GemFury to store my built packages, it requires an API key to get downloads to `pip`. The API key could be added as an environment variable to the app in Heroku by going to **Settings** - **Config Vars**. In fact, I am using Kaggle to store the `neural_network_model` package distribution, so I need to add the Kaggle API key to Heroku.
 
 #### Deploy
 ##### Manually
@@ -282,13 +309,25 @@ Alternatively, instead of logging on to Heroku, we can get an API key to the Her
     ```
 - Push it in one go without being logged on (substitute `$HEROKU_API_KEY`):
     ```
-    git push https://heroku:87ac20c4-3aba-4285-a45b-6e9ced9d9e6e@git.heroku.com/udemy-ml-api-ab.git master_AB:master
+    git push https://heroku:$HEROKU_API_KEY@git.heroku.com/udemy-ml-api-ab.git master_AB:master
     ```
+
+**Note**: This method of using `git push` to deploy to Heroku is currently failing (through the CircleCI automated CI commands) because the size of the resulting slug is above Heroku's 500 MB limit - but not by much, as it is coming in at 591 MB. If we use cv2 (i.e. opencv-python) package instead of matplotlib.image and scikit-image, the size is still 566 MB.
 
 ##### Build Docker image then push
 This is implemented in the CircleCI task `section_11_build_and_push_to_heroku_docker` (for `master_AB` branch only). See the comments in `.circleci/config` and `Makefile`. Docs are here:
 - Heroku Docker container registry - push and release: <https://devcenter.heroku.com/articles/container-registry-and-runtime#pushing-an-existing-image>
 - Using a CI/CD platform to automate it: <https://devcenter.heroku.com/articles/container-registry-and-runtime#using-a-ci-cd-platform>
+
+If you build using Docker, but then wish to switch back to the `git push` method, you need to first manually change the `stack` that the app uses. Specifically:
+```
+heroku login -i
+heroku apps:stacks -a udemy-ml-api-ab  # Get a list of the available stacks for this app
+# If using Docker, then the "container" stack will be selected.
+heroku stack:set heroku-18 -a udemy-ml-api-ab   # To switch to the "heroku-18" option
+```
+`heroku-18` is currently the default stack for new apps. See: <https://devcenter.heroku.com/articles/stack>
+
 
 #### See it running
 From the dashboard, click **Open app**. Alternatively, it is here: <https://udemy-ml-api-ab.herokuapp.com/version>.
@@ -304,6 +343,7 @@ The following submits the JSON input data at `scripts/input_test.json` to the de
 ```
 curl --request GET https://udemy-ml-api-ab.herokuapp.com/version
 curl --header "Content-Type: application/json" --request POST --data "@scripts/input_test.json" https://udemy-ml-api-ab.herokuapp.com/v1/predict/regression
+curl --request POST --form "file=@packages/neural_network_model/neural_network_model/datasets/test_data/Black-grass/1.png;type=image/png" https://udemy-ml-api-ab.herokuapp.com/predict/classifier
 ```
 
 #### Other commands
@@ -334,7 +374,12 @@ I spent some time trying to get VSCode to work inside JupyterLab on Binder, usin
 When I first installed Heroku CLI, for any command entered, I got a message saying an update (to `6.99.0`) is available. I ignored it (as per <https://github.com/heroku/cli/issues/1182#issue-397716857>), and it appears to have gone away after some time.
 
 #### Dyno hours on free account
-The free option for Heroku gives 550 dyno hours per month. To check how many have been used and are remaining, see here: <https://help.heroku.com/FRHZA2YG/how-do-i-monitor-my-free-dyno-hours-quota>.
+The free option for Heroku gives 550 dyno hours per month. To check how many have been used and are remaining, see here: <https://help.heroku.com/FRHZA2YG/how-do-i-monitor-my-free-dyno-hours-quota> or run the following from the Heroku API (for each app that I have):
+```
+heroku login -i
+heroku ps -a udemy-ml-api-ab
+heroku logout
+```
 
 #### Platform API
 To use the Heroku Platform API from Windows, we need to:

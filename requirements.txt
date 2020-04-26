@@ -1,3 +1,6 @@
 # This environment specification will be used by Heroku when deploying the API app
+# The Python version is taken from `runtime.txt` (that file does *not* allow comments).
+# Only certain versions are supported, as per: 
+# <https://devcenter.heroku.com/articles/python-support#supported-runtimes>
 
 -r packages/ml_api/requirements.txt
