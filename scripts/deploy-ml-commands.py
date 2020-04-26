@@ -1,3 +1,4 @@
+# %% [code]
 """
 Recording commands to train and build the neural_network_model package.
 
@@ -44,7 +45,7 @@ from joblib import __version__ as joblib_version
 from numpy import __version__ as np_version
 from pandas import __version__ as pd_version
 from matplotlib import __version__ as mpl_version
-from cv2 import __version__ as cv2_version
+from skimage import __version__ as skimage_version
 from sklearn import __version__ as sk_version
 from tensorflow import __version__ as tf_version
 from keras import __version__ as keras_version
@@ -72,8 +73,8 @@ assert pd_version == '0.25.3'
 print(f"pandas version:\t\t{pd_version}")
 assert mpl_version == '3.2.1'
 print(f"matplotlib version:\t{mpl_version}")
-assert cv2_version == '4.2.0'
-print(f"cv2 version:\t\t{cv2_version}")
+assert skimage_version == '0.16.2'
+print(f"skimage version:\t{skimage_version}")
 assert sk_version == '0.22.2.post1'
 print(f"sklearn version:\t{sk_version}")
 assert tf_version == '2.1.0'
