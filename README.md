@@ -312,7 +312,7 @@ Alternatively, instead of logging on to Heroku, we can get an API key to the Her
     git push https://heroku:$HEROKU_API_KEY@git.heroku.com/udemy-ml-api-ab.git master_AB:master
     ```
 
-**Note**: This method of using `git push` to deploy to Heroku is currently failing (through the CirclCI automated CI commands) because the size of the resulting slug is above Heroku's 500 MB limit - but not by much, as it is coming in at 566 MB. Consider re-factoring the `neural_network_model` package so that it does not have `opencv-python` (i.e. the `cv2` module) as a dependency - at the moment, it is only used to resize images in one place.
+**Note**: This method of using `git push` to deploy to Heroku is currently failing (through the CircleCI automated CI commands) because the size of the resulting slug is above Heroku's 500 MB limit - but not by much, as it is coming in at 566 MB. Consider re-factoring the `neural_network_model` package so that it does not have `opencv-python` (i.e. the `cv2` module) as a dependency - at the moment, it is only used to resize images in one place.
 
 ##### Build Docker image then push
 This is implemented in the CircleCI task `section_11_build_and_push_to_heroku_docker` (for `master_AB` branch only). See the comments in `.circleci/config` and `Makefile`. Docs are here:
@@ -343,7 +343,7 @@ The following submits the JSON input data at `scripts/input_test.json` to the de
 ```
 curl --request GET https://udemy-ml-api-ab.herokuapp.com/version
 curl --header "Content-Type: application/json" --request POST --data "@scripts/input_test.json" https://udemy-ml-api-ab.herokuapp.com/v1/predict/regression
-curl --request POST -form "file=@packages/neural_network_model/neural_network_model/datasets/test_data/Black-grass/1.png;type=image/png" https://udemy-ml-api-ab.herokuapp.com/v1/predict/classifier
+curl --request POST --form "file=@packages/neural_network_model/neural_network_model/datasets/test_data/Black-grass/1.png;type=image/png" https://udemy-ml-api-ab.herokuapp.com/predict/classifier
 ```
 
 #### Other commands
