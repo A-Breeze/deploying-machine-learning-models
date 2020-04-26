@@ -263,7 +263,7 @@ workflows:
           filters:
             branches:
               only:
-                - no_cv2_dependncy
+                - Sect13_NN_model
       # - section_11_build_and_push_to_heroku_docker:
       #     requires:
       #       - train_and_upload_regression_model
