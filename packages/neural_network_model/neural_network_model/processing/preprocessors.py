@@ -23,8 +23,8 @@ class TargetEncoder(BaseEstimator, TransformerMixin):
 
 
 def _im_resize(df, n, image_size):
-    mpimg.imread(df[n])[:,:,:3]
-    skimage.transform.resize(im, (image_size, image_size))
+    im1 = mpimg.imread(df[n])[:,:,:3]
+    im = skimage.transform.resize(im1, (image_size, image_size))
     return im
 
 
