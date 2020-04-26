@@ -2,7 +2,7 @@
 -r common_requirements.txt
 
 # ...plus neural_network_model fetched from Kaggle repository
-./packages/neural_network_model/dist/neural_network_model-0.0.4
+./packages/neural_network_model/dist/neural_network_model-0.0.5
 
 # ...plus *current* regression_model version that is committed in the repo
 ./packages/regression_model/dist/regression_model-1.1.0.tar.gz
