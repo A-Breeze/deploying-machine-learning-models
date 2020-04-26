@@ -45,7 +45,7 @@ It *should* be possible to run the code in JupyterLab (or another IDE) from your
 All console commands are **run from the root folder of this project** unless otherwise stated.
 
 ### Start Binder instance
-[![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/A-Breeze/deploying-machine-learning-models/Sect13_NN_model?urlpath=lab)
+[![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/A-Breeze/deploying-machine-learning-models/no_cv2_dependency?urlpath=lab)
 
 ### Package environment
 We create a conda-env to track the version of Python, and then use a `venv` that is specified *within* the conda-env.
@@ -312,7 +312,7 @@ Alternatively, instead of logging on to Heroku, we can get an API key to the Her
     git push https://heroku:$HEROKU_API_KEY@git.heroku.com/udemy-ml-api-ab.git master_AB:master
     ```
 
-**Note**: This method of using `git push` to deploy to Heroku is currently failing (through the CircleCI automated CI commands) because the size of the resulting slug is above Heroku's 500 MB limit - but not by much, as it is coming in at 566 MB. Consider re-factoring the `neural_network_model` package so that it does not have `opencv-python` (i.e. the `cv2` module) as a dependency - at the moment, it is only used to resize images in one place.
+**Note**: This method of using `git push` to deploy to Heroku is currently failing (through the CircleCI automated CI commands) because the size of the resulting slug is above Heroku's 500 MB limit - but not by much, as it is coming in at 566 MB.
 
 ##### Build Docker image then push
 This is implemented in the CircleCI task `section_11_build_and_push_to_heroku_docker` (for `master_AB` branch only). See the comments in `.circleci/config` and `Makefile`. Docs are here:

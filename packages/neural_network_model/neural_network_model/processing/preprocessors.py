@@ -1,5 +1,6 @@
 import numpy as np
-import cv2
+import skimage
+import matplotlib.image as mpimg
 from keras.utils import np_utils
 from sklearn.preprocessing import LabelEncoder
 from sklearn.base import BaseEstimator, TransformerMixin
@@ -22,8 +23,8 @@ class TargetEncoder(BaseEstimator, TransformerMixin):
 
 
 def _im_resize(df, n, image_size):
-    im = cv2.imread(df[n])
-    im = cv2.resize(im, (image_size, image_size))
+    mpimg.imread(df[n])[:,:,:3]
+    skimage.transform.resize(im, (image_size, image_size))
     return im
 
 
