@@ -1,5 +1,5 @@
 import numpy as np
-import skimage
+import skimage.transform
 import matplotlib.image as mpimg
 from keras.utils import np_utils
 from sklearn.preprocessing import LabelEncoder
