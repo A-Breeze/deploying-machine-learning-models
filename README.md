@@ -45,7 +45,7 @@ It *should* be possible to run the code in JupyterLab (or another IDE) from your
 All console commands are **run from the root folder of this project** unless otherwise stated.
 
 ### Start Binder instance
-[![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/A-Breeze/deploying-machine-learning-models/no_cv2_dependency?urlpath=lab)
+[![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/A-Breeze/deploying-machine-learning-models/Ssect13_NN_model?urlpath=lab)
 
 ### Package environment
 We create a conda-env to track the version of Python, and then use a `venv` that is specified *within* the conda-env.
