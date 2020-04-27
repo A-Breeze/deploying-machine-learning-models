@@ -14,6 +14,8 @@ For the documentation, visit the [course on Udemy](https://www.udemy.com/deploym
     - [Package environment](#Package-environment)
 1. [Structure of the repo and course](#Structure-of-the-repo-and-course)
     - [Other materials](#Other-materials)
+1. [Tasks: Research notebooks](#Tasks-Research-notebooks)
+    - [Install dependencies: Research notebooks](#Install-dependencies-Research-notebooks)
 1. [Tasks: Model package](#Tasks-Model-package)
     - [Install dependencies: Model package](#Install-dependencies-Model-package)
     - [Get data for modelling](#Get-data-for-modelling)
@@ -45,7 +47,7 @@ It *should* be possible to run the code in JupyterLab (or another IDE) from your
 All console commands are **run from the root folder of this project** unless otherwise stated.
 
 ### Start Binder instance
-[![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/A-Breeze/deploying-machine-learning-models/master_AB?urlpath=lab)
+[![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/A-Breeze/deploying-machine-learning-models/enable_notebooks?urlpath=lab)
 
 ### Package environment
 We create a conda-env to track the version of Python, and then use a `venv` that is specified *within* the conda-env.
@@ -69,17 +71,7 @@ We create a conda-env to track the version of Python, and then use a `venv` that
 
 ## Structure of the repo and course
 *Note*: The structure of the repo changes as we work through the course, so the description here may not be entirely up to date. Section numbers refer to the Udemy course. 
-- `jupyter_notebooks/.` **Section 2** and **Section 13**: Notebooks that were originally used to analyse the data and build the model, i.e. the *research environment*. Since then, the main code has been converted to the model packages (see below), so these are no longer part of the (automated) modelling pipeline. They are kept in the repo as an example of how the inspiration would be kept close to the deployment code (i.e. a *mono-repo*). To run the notebooks, you need to:
-    1. Get the data for modelling, as [below](#Get-data-for-modelling)
-    1. Install the dependencies for the research environment:
-        ```
-        pip install -r jupyter_notebooks/Section2_MLPipelineOverview/requirements.txt
-        ```
-    
-    Other notes: 
-    - The notebook code does **not** currently run properly. Ideally, this would be fixed.
-    - The notebook for research of the `neural_network_model` was run in a Kaggle kernel *not* within Binder. The Kaggle kernel (that is kept in sync *manually* with the copy of the notebook in this repo) is here: <https://www.kaggle.com/btw78jt/deploy-ml-course-cnn>
-    
+- `jupyter_notebooks/.` **Section 2** and **Section 13**    
 - **Section 3**: Considerations for the architecture of the package.
 - `packages/`:
     - `regression_model`  **Section 4 and 6**: A reproducible pipeline to build the model from source data, including pre-processing.
@@ -103,6 +95,38 @@ The Udemy course provided slides and notes (not saved in this repo).
 
 <p align="right"><a href="#top">Back to top</a></p>
 
+## Tasks: Research notebooks
+Notebooks that were originally used to analyse the data and build the model, i.e. the *research environment*. Since then, the main code has been converted to the model packages (see below), so these are no longer part of the (automated) modelling pipeline. They are kept in the repo as an example of how the inspiration would be kept close to the deployment code (i.e. a *mono-repo*). 
+
+The notebook for research of the `neural_network_model` was run in a Kaggle kernel *not* within Binder. The Kaggle kernel (that is kept in sync *manually* with the copy of the notebook in this repo) is here: <https://www.kaggle.com/btw78jt/deploy-ml-course-cnn>.
+
+### Install dependencies: Research notebooks
+To run the notebooks, you need to:
+1. Create the conda-env and register it as a kernel for use in the JupyterLab session:
+    ```
+    conda activate notebook
+    conda env create -f jupyter_notebooks/environment.yml --force
+    conda activate deploy_ML_research_env
+    /srv/conda/envs/deploy_ML_research_env/bin/python -m ipykernel install --name deploy_ML_research_env --prefix /srv/conda/envs/notebook
+    ```
+    The `--prefix` option ensures the new conda-env is registered as a kernel in the `notebook` conda-env (i.e. the conda-env that is running in JupyterLab). See below for further info on managing Jupyter kernels.
+
+    From the JupyterLab *launcher*, you will now see there is an option to start a notebook using the new kernel (it may take a moment for this to take effect).
+1. Install the dependencies for the research environment:
+    ```
+    pip install -r jupyter_notebooks/Section2_MLPipelineOverview/requirements.txt
+    ```
+1. Get the data for modelling, as [below](#Get-data-for-modelling)
+
+#### Managing Jupyter kernels
+```
+conda activate notebook
+jupyter kernelspec list  # Get a list of the available kernels
+jupyter kernelspec remove [kernel name]  # Unregister a kernel
+```
+
+<p align="right"><a href="#top">Back to top</a></p>
+
 ## Tasks: Model package
 In many cases, the tasks listed in this document are are carried out in an automated way by the CI integration (see [Run continuous integration](#Run-continuous-integration)).
 
@@ -122,13 +146,15 @@ Data is required for fitting the model in the `regression_model` package. It is 
     - This downloads a `kaggle.json` which should normally be saved at `~/.kaggle/kaggle.json` (Linux) or `C:\Users<Windows-username>.kaggle\kaggle.json` (Windows).
 - Create a `kaggle.json` file manually in JupyterLab in the project root directory (which is `~`). Then move it to a `.kaggle` folder by (in console since JupyterLab can't see folders that being with `.`):
     ```
+    touch kaggle.json
     chmod 600 kaggle.json  # Advised to run this so it is not visible by other users
+    # Open the file and paste in the JSON from your `kaggle.json`
     mkdir .kaggle
     mv kaggle.json .kaggle/kaggle.json
     ```
 - Now ensure the requirements for fetching data are installed and run the relevant script by:
     ```
-    
+    pip install -r ./scripts/requirements.txt
     chmod +x scripts/fetch_kaggle_dataset.sh
     scripts/fetch_kaggle_dataset.sh
     ```

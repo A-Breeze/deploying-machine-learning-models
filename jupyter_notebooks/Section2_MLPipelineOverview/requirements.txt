@@ -1,0 +1,5 @@
+# Common requirements for the research notebooks
+-r ../common_requirements.txt
+
+# Additional requirements that are only needed for this section
+# [None currently]
