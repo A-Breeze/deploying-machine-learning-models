@@ -3,9 +3,9 @@
 [![A-Breeze](https://circleci.com/gh/A-Breeze/deploying-machine-learning-models.svg?style=shield)](https://circleci.com/gh/A-Breeze/deploying-machine-learning-models)
 
 # Deployment of Machine Learning Models
-Fork of repo for the online course Deployment of Machine Learning Models.
-
-For the documentation, visit the [course on Udemy](https://www.udemy.com/deployment-of-machine-learning-models/).
+Recording and implementing code from the online course "Deployment of Machine Learning Models".
+- For the details, visit the [course on Udemy](https://www.udemy.com/deployment-of-machine-learning-models/).
+- Certificate to show my completion of the course [here](https://www.udemy.com/certificate/UC-c643a131-6d91-43db-8830-d656adde5cf6/).
 
 <!--This table of contents is maintained *manually*-->
 ## Contents
