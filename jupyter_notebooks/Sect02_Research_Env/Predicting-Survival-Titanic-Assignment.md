@@ -275,7 +275,7 @@ print("Correct: All reasonableness tests have passed")
 def find_frequent_labels(df, var, rare_perc):
     # finds the labels that are shared by more than a certain % of the rows
     tmp = df[var].value_counts(normalize=True)
-    return tmp[tmp>=rare_perc].index
+    return tmp[tmp>=rare_perc].index.tolist()
 ```
 
 ```python
@@ -317,7 +317,6 @@ new_props = {
     col_name: X_train[col_name].value_counts(normalize=True)
     for col_name in vars_cat
 }
-col_name = vars_cat[0]
 for col_name in vars_cat:
     display(
         original_props[col_name].to_frame('orig').merge(
@@ -392,8 +391,8 @@ joblib.dump(scaler, 'scaler.pkl')
 
 ```python
 # transform the train and test set
-X_train = pd.DataFrame(scaler.transform(X_train))
-X_test = pd.DataFrame(scaler.transform(X_test))
+X_train = pd.DataFrame(scaler.transform(X_train), columns=X_train.columns)
+X_test = pd.DataFrame(scaler.transform(X_test), columns=X_train.columns)
 ```
 
 ## Train the Logistic Regression model

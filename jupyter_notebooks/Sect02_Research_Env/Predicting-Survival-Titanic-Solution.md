@@ -307,6 +307,7 @@ X_test.head()
 # was not present in the test set
 
 X_test['embarked_Rare'] = 0
+X_test = X_test[X_train.columns]  # Align the column order
 ```
 
 ### Scale the variables
@@ -321,9 +322,9 @@ scaler = StandardScaler()
 scaler.fit(X_train) 
 
 # transform the train and test set
-X_train = scaler.transform(X_train)
+X_train = pd.DataFrame(scaler.transform(X_train), columns=X_train.columns)
 
-X_test = scaler.transform(X_test)
+X_test = pd.DataFrame(scaler.transform(X_test), columns=X_test.columns)
 ```
 
 ## Train the Logistic Regression model
