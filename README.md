@@ -71,11 +71,14 @@ We create a conda-env to track the version of Python, and then use a `venv` that
 
 ## Structure of the repo and course
 *Note*: The structure of the repo changes as we work through the course, so the description here may not be entirely up to date. Section numbers refer to the Udemy course. 
-- `jupyter_notebooks/.` **Section 2** and **Section 13**    
+- `jupyter_notebooks/.`: Research environment (before productionising code). Subfolders `built/` store the assignment submissions (including notebook output).
+    - `Sect02_MLPipelineOverview/` **Section 2**: Creating an ML model, and Assignment 1.
+    - `Sect04_ML_Pipeline/.` **Section 4**: Worked examples of how to productionise a machine pipeline, and Assignments 2 and 3.
+    - `Sect12_DeepLearningModel/` **Section 12**: Copy of notebook that is run on Kaggle here: <https://www.kaggle.com/btw78jt/deploy-ml-course-cnn>.
 - **Section 3**: Considerations for the architecture of the package.
 - `packages/`:
-    - `regression_model`  **Section 4 and 6**: A reproducible pipeline to build the model from source data, including pre-processing.
-    - `neural_network_model` **Section 13**: The dataset for this model is large (2GB), so I don't want to load it into Binder (as per: <https://github.com/binder-examples/getting-data#large-public-files>). Therefore, I have created a Kaggle Kernel and uploaded this repo as a "dataset" for the kernel. The commands to train and build the package are recorded on Kaggle and also copied here: **TODO**: Save Kaggle script into GitHub repo.
+    - `regression_model` **Section 6**: A reproducible pipeline to build the model from source data, including pre-processing.
+    - `neural_network_model` **Section 13**: The dataset for this model is large (2GB), so I don't want to load it into Binder (as per: <https://github.com/binder-examples/getting-data#large-public-files>). Therefore, I have created a Kaggle Kernel and uploaded this repo as a "dataset" for the kernel. The commands to train and build the package are recorded on Kaggle (see: <https://www.kaggle.com/btw78jt/deploy-ml-commands>) and also copied here to `deploy-ml-commands.py`.
     - `ml_api` **Section 7**: Serve the model as a Flask API to be consumed.
         - `tests/differential_tests/` **Section 9**
 - `scripts/`
@@ -96,7 +99,7 @@ The Udemy course provided slides and notes (not saved in this repo).
 <p align="right"><a href="#top">Back to top</a></p>
 
 ## Tasks: Research notebooks
-Notebooks that were originally used to analyse the data and build the model, i.e. the *research environment*. Since then, the main code has been converted to the model packages (see below), so these are no longer part of the (automated) modelling pipeline. They are kept in the repo as an example of how the inspiration would be kept close to the deployment code (i.e. a *mono-repo*). 
+Notebooks and scripts that were originally used to analyse the data and build the model, and also to investigate productionisation options, i.e. the *research environment*. Since then, the main code has been converted to the model packages (see below), so these are no longer part of the (automated) modelling pipeline. They are kept in the repo as an example of how the inspiration would be kept close to the deployment code (i.e. a *mono-repo*). 
 
 The notebook for research of the `neural_network_model` was run in a Kaggle kernel *not* within Binder. The Kaggle kernel (that is kept in sync *manually* with the copy of the notebook in this repo) is here: <https://www.kaggle.com/btw78jt/deploy-ml-course-cnn>.
 
@@ -112,9 +115,12 @@ To run the notebooks, you need to:
     The `--prefix` option ensures the new conda-env is registered as a kernel in the `notebook` conda-env (i.e. the conda-env that is running in JupyterLab). See below for further info on managing Jupyter kernels.
 
     From the JupyterLab *launcher*, you will now see there is an option to start a notebook using the new kernel (it may take a moment for this to take effect).
-1. Install the dependencies for the research environment:
+1. Install the dependencies for the relevant environment:
     ```
-    pip install -r jupyter_notebooks/Section2_MLPipelineOverview/requirements.txt
+    # For both Section 2 and Section 4:
+    pip install -r jupyter_notebooks/Sect02_MLPipelineOverview/requirements.txt
+    # For both Section 12:
+    pip install -r jupyter_notebooks/Sect12_DeepLearningModel/requirements.txt
     ```
 1. Get the data for modelling, as [below](#Get-data-for-modelling)
 
