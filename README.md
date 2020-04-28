@@ -16,6 +16,7 @@ For the documentation, visit the [course on Udemy](https://www.udemy.com/deploym
     - [Other materials](#Other-materials)
 1. [Tasks: Research notebooks](#Tasks-Research-notebooks)
     - [Install dependencies: Research notebooks](#Install-dependencies-Research-notebooks)
+    - [Execute notebooks from command line](#Execute-notebooks-from-command-line)
 1. [Tasks: Model package](#Tasks-Model-package)
     - [Install dependencies: Model package](#Install-dependencies-Model-package)
     - [Get data for modelling](#Get-data-for-modelling)
@@ -51,7 +52,7 @@ All console commands are **run from the root folder of this project** unless oth
 
 ### Package environment
 We create a conda-env to track the version of Python, and then use a `venv` that is specified *within* the conda-env.
-- **Binder**: A conda-env is created from `binder/environment.yml` in Binder is called `notebook` by default. Commands for the Binder Console (in Linux) are:
+- **Binder**: A conda-env is created from `binder/environment.yml` in Binder is called `notebook` by default. Commands for the Binder Console (in Linux) are as follows (although there are separate instructions to [Install dependencies: Research notebooks](#Install-dependencies-Research-notebooks)).
     ```
     conda activate notebook
     python -m venv venv
@@ -72,13 +73,13 @@ We create a conda-env to track the version of Python, and then use a `venv` that
 ## Structure of the repo and course
 *Note*: The structure of the repo changes as we work through the course, so the description here may not be entirely up to date. Section numbers refer to the Udemy course. 
 - `jupyter_notebooks/.`: Research environment (before productionising code). Subfolders `built/` store the assignment submissions (including notebook output).
-    - `Sect02_MLPipelineOverview/` **Section 2**: Creating an ML model, and Assignment 1.
+    - `Sect02_Research_Env/` **Section 2**: Creating an ML model, and Assignment 1.
     - `Sect04_ML_Pipeline/.` **Section 4**: Worked examples of how to productionise a machine pipeline, and Assignments 2 and 3.
     - `Sect12_DeepLearningModel/` **Section 12**: Copy of notebook that is run on Kaggle here: <https://www.kaggle.com/btw78jt/deploy-ml-course-cnn>.
 - **Section 3**: Considerations for the architecture of the package.
 - `packages/`:
     - `regression_model` **Section 6**: A reproducible pipeline to build the model from source data, including pre-processing.
-    - `neural_network_model` **Section 13**: The dataset for this model is large (2GB), so I don't want to load it into Binder (as per: <https://github.com/binder-examples/getting-data#large-public-files>). Therefore, I have created a Kaggle Kernel and uploaded this repo as a "dataset" for the kernel. The commands to train and build the package are recorded on Kaggle (see: <https://www.kaggle.com/btw78jt/deploy-ml-commands>) and also copied here to `deploy-ml-commands.py`.
+    - `neural_network_model` **Section 13**: The dataset for this model is large (2GB), so I don't want to load it into Binder (as per: <https://github.com/binder-examples/getting-data#large-public-files>). Therefore, I have created a Kaggle Kernel and uploaded this repo as a "dataset" for the kernel. The commands to train and build the package are recorded on Kaggle (see: <https://www.kaggle.com/btw78jt/deploy-ml-commands>) and also copied to `deploy-ml-commands.py`.
     - `ml_api` **Section 7**: Serve the model as a Flask API to be consumed.
         - `tests/differential_tests/` **Section 9**
 - `scripts/`
@@ -118,7 +119,7 @@ To run the notebooks, you need to:
 1. Install the dependencies for the relevant environment:
     ```
     # For both Section 2 and Section 4:
-    pip install -r jupyter_notebooks/Sect02_MLPipelineOverview/requirements.txt
+    pip install -r jupyter_notebooks/Sect02_Research_Env/requirements.txt
     # For both Section 12:
     pip install -r jupyter_notebooks/Sect12_DeepLearningModel/requirements.txt
     ```
@@ -129,6 +130,15 @@ To run the notebooks, you need to:
 conda activate notebook
 jupyter kernelspec list  # Get a list of the available kernels
 jupyter kernelspec remove [kernel name]  # Unregister a kernel
+```
+
+### Execute notebooks from command line
+The notebooks have been saved in `jupytext` markdown format, so they can be executed (to produce the outputs) as follows, for example, for the Section 2 notebooks:
+```
+conda activate deploy_ML_research_env
+jupytext --execute jupyter_notebooks/Sect02_Research_Env/02.*.md
+# OR (the following is for single notebooks)
+jupytext --to notebook --output jupyter_notebooks/Sect02_Research_Env/built/Predicting-Survival-Titanic-Assignment.ipynb --execute jupyter_notebooks/Sect02_Research_Env/Predicting-Survival-Titanic-Assignment.md
 ```
 
 <p align="right"><a href="#top">Back to top</a></p>
@@ -438,14 +448,11 @@ See:
 <p align="right"><a href="#top">Back to top</a></p>
 
 ## Further ideas
+- Make this an independent repo, not a fork of the train repo.
 - Add Swagger UI view for the `ml_api` using flasgger: <https://github.com/flasgger/flasgger>
 - Convert `ml_api` from a Flask API to using [Flask-RESTX](https://github.com/python-restx/flask-restx) or Flask-RESTful. Not much difference, as per <https://stackoverflow.com/a/41783739>.
 - Remove comments from the PyCharm lint tests (e.g. `# noinspection PyShadowingBuiltins`) and run `pylint` tests instead.
-- Ensure the `jupyter_notebooks` can be run.
-    - Incorporate other research code that is currently sitting in a previous repo, not in this monorepo.
-- Make this an independent repo, not a fork of the train repo.
 - Look back at the course - there are some additional lessons in the 2020 update, including intro to *Tox* (Section 5.9). Complete these lessons.
-- Align the version of Python between CircleCI config, Dockerfile, and Binder (and local) development `environment.yml`.
 - Try out different hosted development, CI and CD options, e.g.:
     - *Git Actions* instead of CircleCI
     - *Azure DevOps* instead of GitHub. Looks like you can use GitHub credentials to access Azure DevOps.
